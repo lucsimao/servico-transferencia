@@ -12,13 +12,14 @@ export class CreateTransferController {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const transfer = httpRequest.body as CreateTransferParams;
-      await this.createTransfer.create(transfer);
-
-      return {
-        statusCode: 500,
-        body: { message: 'Internal server error' },
+      const transferParam = httpRequest.body as CreateTransferParams;
+      const transfer = await this.createTransfer.create(transferParam);
+      const result = {
+        statusCode: httpStatusCodes.CREATED,
+        body: transfer,
       };
+
+      return result;
     } catch (error) {
       return {
         statusCode: httpStatusCodes.INTERNAL_SERVER_ERROR,
