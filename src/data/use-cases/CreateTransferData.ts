@@ -10,7 +10,11 @@ export class CreateTransferData implements CreateTransfer {
   constructor(private readonly httpClient: HttpClient) {}
 
   public async create(params: CreateTransferParams): Promise<TransferModel> {
-    await this.httpClient.post('any_url', params);
-    return {} as TransferModel;
+    const result = await this.httpClient.post<
+      CreateTransferParams,
+      TransferModel
+    >('any_url', params);
+
+    return result;
   }
 }
