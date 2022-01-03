@@ -1,5 +1,6 @@
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferController } from './CreateTransferController';
+import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { HttpRequest } from '../interfaces/HttpRequest';
 import { TransferModel } from '../../domain/models/TransferModel';
 import { TransferStatusEnum } from '../../domain/enums/TransferStatusEnum';
@@ -48,6 +49,19 @@ describe(CreateTransferController.name, () => {
       expect(result).toEqual({
         statusCode: httpStatusCodes.CREATED,
         body: makeFakeTransferModel(),
+      });
+    });
+
+    it(`Should return ${httpStatusCodes.BAD_REQUEST} when CreateTransfer throws a ${ExpiredTransferError.name}`, async () => {
+      const { sut, createTransferStub } = makeSut();
+      const fakeHttpRequest = makeFakeHttpRequest();
+      createTransferStub.create.mockRejectedValue(new ExpiredTransferError());
+
+      const result = await sut.handle(fakeHttpRequest);
+
+      expect(result).toEqual({
+        statusCode: httpStatusCodes.BAD_REQUEST,
+        body: { message: new ExpiredTransferError() },
       });
     });
 
