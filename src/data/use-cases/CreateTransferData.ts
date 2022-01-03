@@ -3,6 +3,8 @@ import {
   CreateTransferParams,
 } from './../../domain/use-cases/CreateTransfer';
 
+import { DateHelper } from './../helpers/DateHelper';
+import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
 import { HttpClient } from './../interfaces/HttpClient';
 import { TransferModel } from '../../domain/models/TransferModel';
 
@@ -12,7 +14,14 @@ export class CreateTransferData implements CreateTransfer {
     private readonly httpClient: HttpClient
   ) {}
 
-  public async create(params: CreateTransferParams): Promise<TransferModel> {
+  public async create(
+    createTransferParams: CreateTransferParams
+  ): Promise<TransferModel> {
+    const { dueDate, ...params } = createTransferParams;
+    if (dueDate && DateHelper.isDateOverdue(dueDate)) {
+      throw new ExpiredTransferError();
+    }
+
     const result = await this.httpClient.post<
       CreateTransferParams,
       TransferModel
