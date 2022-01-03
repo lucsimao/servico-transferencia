@@ -61,7 +61,7 @@ describe(CreateTransferController.name, () => {
 
       expect(result).toEqual({
         statusCode: httpStatusCodes.BAD_REQUEST,
-        body: { message: new ExpiredTransferError() },
+        body: new ExpiredTransferError(),
       });
     });
 
@@ -76,7 +76,7 @@ describe(CreateTransferController.name, () => {
 
       expect(result).toEqual({
         statusCode: httpStatusCodes.INTERNAL_SERVER_ERROR,
-        body: { message: new Error('any_create_error') },
+        body: new Error('any_create_error'),
       });
     });
   });
