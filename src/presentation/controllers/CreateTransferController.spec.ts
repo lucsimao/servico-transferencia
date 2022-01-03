@@ -1,5 +1,6 @@
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferController } from './CreateTransferController';
+import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { HttpRequest } from '../interfaces/HttpRequest';
 import { TransferModel } from '../../domain/models/TransferModel';
@@ -19,7 +20,7 @@ const makeCreateTransferStub = (): jest.Mocked<CreateTransfer> => ({
 });
 
 const makeFakeHttpRequest = () => {
-  return {} as HttpRequest;
+  return {} as HttpRequest<CreateTransferParams>;
 };
 
 const makeSut = () => {
