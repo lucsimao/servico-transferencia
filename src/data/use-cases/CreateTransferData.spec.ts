@@ -21,25 +21,25 @@ const makeFakeTransferModel = (): TransferModel => ({
 });
 
 const makeSut = () => {
+  const fakeUri = 'http://';
   const httpClientStub = makeHttpClientStub();
-  const sut = new CreateTransferData(httpClientStub);
+  const sut = new CreateTransferData(fakeUri, httpClientStub);
 
-  return { sut, httpClientStub };
+  return { sut, httpClientStub, fakeUri };
 };
 
 describe(CreateTransferData.name, () => {
   describe(CreateTransferData.prototype.create.name, () => {
     it('Should call httpClient with correct params when method is invoked', async () => {
-      const { sut, httpClientStub } = makeSut();
+      const { sut, httpClientStub, fakeUri } = makeSut();
       const transferDataParams = makeFakeTransferDataParams();
 
       await sut.create(transferDataParams);
 
-      expect(httpClientStub.post).toBeCalledWith('any_url', {
-        amount: 999,
-        expectedOn: new Date('03/01/2022'),
-        externalId: 'any_external_id',
-      });
+      expect(httpClientStub.post).toBeCalledWith(
+        fakeUri,
+        makeFakeTransferDataParams()
+      );
     });
 
     it('Should return httpClient response when success', async () => {
