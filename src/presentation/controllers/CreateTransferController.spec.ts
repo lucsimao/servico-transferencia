@@ -39,6 +39,18 @@ describe(CreateTransferController.name, () => {
       expect(createTransferStub.create).toBeCalledWith(fakeHttpRequest.body);
     });
 
+    it(`Should return ${httpStatusCodes.CREATED} when CreateTransfer returns a TransferModel`, async () => {
+      const { sut } = makeSut();
+      const fakeHttpRequest = makeFakeHttpRequest();
+
+      const result = await sut.handle(fakeHttpRequest);
+
+      expect(result).toEqual({
+        statusCode: httpStatusCodes.CREATED,
+        body: makeFakeTransferModel(),
+      });
+    });
+
     it(`Should return ${httpStatusCodes.INTERNAL_SERVER_ERROR} when CreateTransfer throws`, async () => {
       const { sut, createTransferStub } = makeSut();
       const fakeHttpRequest = makeFakeHttpRequest();
