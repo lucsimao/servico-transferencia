@@ -1,8 +1,13 @@
 import { CreateTransferData } from './CreateTransferData';
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
+import { DateHelper } from './../helpers/DateHelper';
+import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
 import { HttpClient } from './../interfaces/HttpClient';
 import { TransferModel } from './../../domain/models/TransferModel';
 import { TransferStatusEnum } from './../../domain/enums/TransferStatusEnum';
+
+jest.mock('./../helpers/DateHelper');
+jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(true);
 
 const makeHttpClientStub = (): jest.Mocked<HttpClient> => ({ post: jest.fn() });
 
@@ -50,6 +55,19 @@ describe(CreateTransferData.name, () => {
       const result = await sut.create(transferDataParams);
 
       expect(result).toEqual(makeFakeTransferModel());
+    });
+
+    it(`Should throw ${ExpiredTransferError.name} when transfer is expired`, async () => {
+      const { sut } = makeSut();
+      const transferDataParams = {
+        dueDate: new Date('05/01/2022'),
+        ...makeFakeTransferDataParams(),
+      };
+      jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValueOnce(true);
+
+      const promise = sut.create(transferDataParams);
+
+      await expect(promise).rejects.toThrow(new ExpiredTransferError());
     });
 
     it('Should throw when httpClient throws', async () => {
