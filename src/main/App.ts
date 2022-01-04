@@ -1,5 +1,7 @@
 import express, { Application } from 'express';
 
+import { BodyParserMiddleware } from './middlewares/BodyParserMiddleware';
+import { CorsMiddleware } from './middlewares/CorsMiddleware';
 import Env from './config/Env';
 import { LoggerFactory } from './factories/LoggerFactory';
 import { Server } from 'http';
@@ -29,6 +31,8 @@ export default class App {
 
   public setupMiddlewares(): void {
     Logger.info({ msg: 'Starting routes setup...' });
+    this.app.use(BodyParserMiddleware.getMiddleware());
+    this.app.use(CorsMiddleware.getMiddleware());
     Logger.info({ msg: 'Finished routes setup' });
   }
 
