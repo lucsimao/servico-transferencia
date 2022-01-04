@@ -1,3 +1,8 @@
+import { HttpOptions } from './HttpOptions';
+import { HttpResponse } from './HttpResponse';
+
 export interface HttpClient {
-  post<T, K>(endpoint: string, body: T): Promise<K>;
+  get<T, K>(uri: string, options: HttpOptions<T>): Promise<HttpResponse<K>>;
+
+  post<T, K>(uri: string, options: HttpOptions<T>): Promise<HttpResponse<K>>;
 }

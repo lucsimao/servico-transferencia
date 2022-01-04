@@ -22,11 +22,15 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
+    const options = {
+      body: params,
+    };
+
     const result = await this.httpClient.post<
       CreateTransferParams,
       TransferModel
-    >(this.uri, params);
+    >(this.uri, options);
 
-    return result;
+    return result.body;
   }
 }
