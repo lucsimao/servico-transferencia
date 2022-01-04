@@ -3,6 +3,7 @@ import * as DateFnsModule from 'date-fns';
 import { DateHelper } from './DateHelper';
 
 jest.mock('date-fns');
+jest.useFakeTimers().setSystemTime(new Date().getTime());
 
 const makeSut = () => {
   const sut = DateHelper;
@@ -12,6 +13,18 @@ const makeSut = () => {
 
 describe(DateHelper.name, () => {
   describe(DateHelper.isDateOverdue.name, () => {
+    it('Should call isAfter when method is invoked', () => {
+      const { sut } = makeSut();
+      const date = new Date('01/01/2022');
+      const isAfterSpy = jest
+        .spyOn(DateFnsModule, 'isAfter')
+        .mockReturnValueOnce(false);
+
+      sut.isDateOverdue(date);
+
+      expect(isAfterSpy).toBeCalledWith(date, new Date());
+    });
+
     it('Should return false when isAfter returns false', () => {
       const { sut } = makeSut();
       const date = new Date('01/01/2022');
