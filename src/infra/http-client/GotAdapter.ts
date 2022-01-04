@@ -1,8 +1,5 @@
+import { HttpClient, HttpOptions, HttpResponse } from 'src/data/interfaces';
 import got, { OptionsOfJSONResponseBody } from 'got';
-
-import { HttpClient } from './../../data/interfaces/HttpClient';
-import { HttpOptions } from './../../data/interfaces/HttpOptions';
-import { HttpResponse } from '../../data/interfaces/HttpResponse';
 
 export class GotAdapter implements HttpClient {
   async get<T>(url: string, options?: HttpOptions): Promise<HttpResponse<T>> {

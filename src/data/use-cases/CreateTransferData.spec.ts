@@ -1,9 +1,9 @@
+import { HttpClient, HttpResponse } from '../interfaces';
+
 import { CreateTransferData } from './CreateTransferData';
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
-import { HttpClient } from './../interfaces/HttpClient';
-import { HttpResponse } from '../interfaces/HttpResponse';
 import { TransferModel } from './../../domain/models/TransferModel';
 import { TransferStatusEnum } from './../../domain/enums/TransferStatusEnum';
 

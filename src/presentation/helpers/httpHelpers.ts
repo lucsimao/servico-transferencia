@@ -1,4 +1,4 @@
-import { ApiHttpResponse } from '../interfaces/ApiHttpResponse';
+import { ApiHttpResponse } from '../interfaces';
 import httpStatusCode from 'http-status-codes';
 
 export const created = <T>(body: T): ApiHttpResponse<T> => {

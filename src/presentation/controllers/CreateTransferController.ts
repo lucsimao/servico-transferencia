@@ -1,11 +1,10 @@
+import { ApiHttpRequest, ApiHttpResponse } from './../interfaces/';
 import {
   badRequest,
   created,
   internalServerError,
 } from '../helpers/httpHelpers';
 
-import { ApiHttpRequest } from '../interfaces/ApiHttpRequest';
-import { ApiHttpResponse } from '../interfaces/ApiHttpResponse';
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';

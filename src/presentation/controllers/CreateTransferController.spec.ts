@@ -1,4 +1,4 @@
-import { ApiHttpRequest } from '../interfaces/ApiHttpRequest';
+import { ApiHttpRequest } from '../interfaces';
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferController } from './CreateTransferController';
 import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
