@@ -1,7 +1,6 @@
+import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
 import express, { Application } from 'express';
 
-import { BodyParserMiddleware } from './middlewares/BodyParserMiddleware';
-import { CorsMiddleware } from './middlewares/CorsMiddleware';
 import Env from './config/Env';
 import { LoggerFactory } from './factories/LoggerFactory';
 import { Server } from 'http';
