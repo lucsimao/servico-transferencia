@@ -2,7 +2,7 @@ import { CreateTransferData } from './CreateTransferData';
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
-import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
+import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { TransferModel } from './../../domain/models/TransferModel';
 import { TransferStatusEnum } from './../../domain/enums/TransferStatusEnum';
 

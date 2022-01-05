@@ -2,7 +2,7 @@ import { ApiHttpRequest } from '../interfaces';
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferController } from './CreateTransferController';
 import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
-import { ExpiredTransferError } from '../errors/ExpiredTransferError';
+import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
 import { TransferModel } from '../../domain/models/TransferModel';
 import { TransferStatusEnum } from '../../domain/enums/TransferStatusEnum';
 import httpStatusCodes from 'http-status-codes';

@@ -8,7 +8,7 @@ import {
 import { Controller } from './../interfaces/Controller';
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
-import { ExpiredTransferError } from '../errors/ExpiredTransferError';
+import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
 import { TransferModel } from './../../domain/models/TransferModel';
 
 export class CreateTransferController
