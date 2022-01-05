@@ -1,6 +1,7 @@
-import App from './App';
+import App from './Application';
 import Env from './config/Env';
 import { LoggerFactory } from './factories/LoggerFactory';
+import express from 'express';
 
 const Logger = LoggerFactory.create();
 
@@ -20,9 +21,14 @@ export default class Main {
   }
 
   private static async initServices() {
-    const app = new App(Number(Env.app.port));
+    const app = new App(
+      Number(Env.app.port),
+      express(),
+      LoggerFactory.create()
+    );
     await app.setup();
     app.start();
+
     this.setupUncaughtExceptions();
     this.setupUnhandledRejection();
     this.setupGracefulShutdown(app);
@@ -33,7 +39,7 @@ export default class Main {
       Logger.error({
         msg: `App exiting due to an uncaught exception: ${error}`,
       });
-      process.exit(ExitStatus.Failure);
+      throw error;
     });
   }
 
