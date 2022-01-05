@@ -26,10 +26,12 @@ export class CreateTransferData implements CreateTransfer {
       body: params,
     };
 
+    const uri = this.uri + '/paymentOrders';
+
     const result = await this.httpClient.post<
       CreateTransferParams,
       TransferModel
-    >(this.uri, options);
+    >(uri, options);
 
     return result.body;
   }

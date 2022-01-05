@@ -6,8 +6,7 @@ export class ExpressRouteAdapter {
   public static adapt<T, K>(controller: Controller<T, K>) {
     return async (req: Request, res: Response) => {
       const request = {
-        ...(req.body || {}),
-        ...(req.params || {}),
+        body: req.body,
       };
 
       const httpResponse = await controller.handle(request);

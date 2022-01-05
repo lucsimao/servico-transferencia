@@ -40,7 +40,7 @@ describe(ExpressRouteAdapter.name, () => {
       const adaptedRoute = await sut.adapt(controllerStub);
       await adaptedRoute(req, res);
 
-      expect(controllerStub.handle).toBeCalledWith(req.body);
+      expect(controllerStub.handle).toBeCalledWith(req);
     });
 
     it('Should call res.json with response.body when controller returns success response', async () => {

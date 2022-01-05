@@ -52,7 +52,7 @@ describe(CreateTransferData.name, () => {
 
       await sut.create(transferDataParams);
 
-      expect(httpClientStub.post).toBeCalledWith(fakeUri, {
+      expect(httpClientStub.post).toBeCalledWith(`${fakeUri}/paymentOrders`, {
         body: makeFakeTransferDataParams(),
       });
     });
