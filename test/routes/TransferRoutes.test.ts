@@ -17,11 +17,14 @@ const makeFakeTransferModel = (): TransferModel => ({
   status: TransferStatusEnum.CREATED,
 });
 
-const mockApiReturn = (value: TransferModel) => {
+const mockApiReturn = (
+  status: number,
+  value: TransferModel | { error: Error }
+) => {
   nock.cleanAll();
   nock(Env.servicesAddress.paymentOrders)
     .post('/paymentOrders')
-    .reply(200, value);
+    .reply(status, value);
 };
 
 const makeLoggerStub = (): jest.Mocked<Logger> => ({
@@ -34,14 +37,28 @@ const makeSut = () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
   const sut = new App(3000, expressStub, loggerStub);
-  mockApiReturn(makeFakeTransferModel());
+  mockApiReturn(200, makeFakeTransferModel());
   sut.setup();
 
   return { sut };
 };
 
 describe(TransferRoutes.name, () => {
-  test('Should return an Transfer on success', async () => {
+  test('Should return 500 when api fails', async () => {
+    const { sut } = makeSut();
+    const app = sut.getApp();
+    mockApiReturn(500, { error: new Error('any_internal_error') });
+    const param: CreateTransferParams = {
+      externalId: 'string',
+      amount: 1000,
+      expectedOn: new Date(),
+      dueDate: new Date(),
+    };
+
+    await request(app).post('/api/transfer').send(param).expect(500);
+  });
+
+  test('Should return 201 on success', async () => {
     const { sut } = makeSut();
     const app = sut.getApp();
     const param: CreateTransferParams = {
