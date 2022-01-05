@@ -1,7 +1,6 @@
-import { HttpClient, HttpResponse } from '../interfaces';
-
 import { CreateTransferData } from './CreateTransferData';
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
+import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
 import { TransferModel } from './../../domain/models/TransferModel';
@@ -10,12 +9,10 @@ import { TransferStatusEnum } from './../../domain/enums/TransferStatusEnum';
 jest.mock('./../helpers/DateHelper');
 jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(false);
 
-const makeHttpClientStub = (): jest.Mocked<HttpClient> => ({
-  get: jest.fn(),
-  post: jest
-    .fn()
-    .mockReturnValue(makeFakeHttpResponse(makeFakeTransferModel())),
-});
+const makeFakeCreateTransferRepositoryStub =
+  (): jest.Mocked<CreateTransferRepository> => ({
+    create: jest.fn(),
+  });
 
 const makeFakeTransferDataParams = (): CreateTransferParams => ({
   externalId: 'any_external_id',
@@ -31,51 +28,49 @@ const makeFakeTransferModel = (): TransferModel => ({
   status: TransferStatusEnum.CREATED,
 });
 
-const makeFakeHttpResponse = (data: unknown): HttpResponse => ({
-  statusCode: 200,
-  body: data,
-});
-
 const makeSut = () => {
-  const fakeUri = 'http://any_uri/my_url';
-  const httpClientStub = makeHttpClientStub();
-  const sut = new CreateTransferData(fakeUri, httpClientStub);
+  const createTransferRepositoryStub = makeFakeCreateTransferRepositoryStub();
+  const sut = new CreateTransferData(createTransferRepositoryStub);
 
-  return { sut, httpClientStub, fakeUri };
+  return { sut, createTransferRepositoryStub };
 };
 
 describe(CreateTransferData.name, () => {
   describe(CreateTransferData.prototype.create.name, () => {
-    it('Should call httpClient with correct params when method is invoked', async () => {
-      const { sut, httpClientStub, fakeUri } = makeSut();
+    it('Should call createTransferRepository with correct params when method is invoked', async () => {
+      const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = makeFakeTransferDataParams();
 
       await sut.create(transferDataParams);
 
-      expect(httpClientStub.post).toBeCalledWith(`${fakeUri}/paymentOrders`, {
-        body: makeFakeTransferDataParams(),
-      });
+      expect(createTransferRepositoryStub.create).toBeCalledWith(
+        transferDataParams
+      );
     });
 
-    it('Should return httpClient response when dueDate is provided and not expired', async () => {
-      const { sut, httpClientStub } = makeSut();
+    it('Should return CreateTransferModel response when dueDate is provided and not expired', async () => {
+      const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = {
-        dueDate: new Date('05/01/2022'),
+        dueDate: new Date(),
         ...makeFakeTransferDataParams(),
       };
-      const fakeHttpResponse = makeFakeHttpResponse(makeFakeTransferModel());
-      httpClientStub.post.mockResolvedValueOnce(fakeHttpResponse);
+      const fakeTransferModel = makeFakeTransferModel();
+      createTransferRepositoryStub.create.mockResolvedValueOnce(
+        fakeTransferModel
+      );
 
       const result = await sut.create(transferDataParams);
 
       expect(result).toEqual(makeFakeTransferModel());
     });
 
-    it('Should return httpClient response when success', async () => {
-      const { sut, httpClientStub } = makeSut();
+    it('Should return CreateTransferModel response when success', async () => {
+      const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = makeFakeTransferDataParams();
-      const fakeHttpResponse = makeFakeHttpResponse(makeFakeTransferModel());
-      httpClientStub.post.mockResolvedValueOnce(fakeHttpResponse);
+      const fakeTransferModel = makeFakeTransferModel();
+      createTransferRepositoryStub.create.mockResolvedValueOnce(
+        fakeTransferModel
+      );
 
       const result = await sut.create(transferDataParams);
 
@@ -83,13 +78,15 @@ describe(CreateTransferData.name, () => {
     });
 
     it(`Should throw ${ExpiredTransferError.name} when transfer is expired`, async () => {
-      const { sut, httpClientStub } = makeSut();
+      const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = {
-        dueDate: new Date('05/01/2022'),
+        dueDate: new Date(),
         ...makeFakeTransferDataParams(),
       };
-      const fakeHttpResponse = makeFakeHttpResponse(makeFakeTransferModel());
-      httpClientStub.post.mockResolvedValueOnce(fakeHttpResponse);
+      const fakeTransferModel = makeFakeTransferModel();
+      createTransferRepositoryStub.create.mockResolvedValueOnce(
+        fakeTransferModel
+      );
       jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValueOnce(true);
 
       const promise = sut.create(transferDataParams);
@@ -97,16 +94,18 @@ describe(CreateTransferData.name, () => {
       await expect(promise).rejects.toThrow(new ExpiredTransferError());
     });
 
-    it('Should throw when httpClient throws', async () => {
-      const { sut, httpClientStub } = makeSut();
+    it('Should throw when createTransferRepository throws', async () => {
+      const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = makeFakeTransferDataParams();
-      httpClientStub.post.mockRejectedValueOnce(
-        new Error('any_httpClient_error')
+      createTransferRepositoryStub.create.mockRejectedValueOnce(
+        new Error('any_createTransferRepository_error')
       );
 
       const promise = sut.create(transferDataParams);
 
-      await expect(promise).rejects.toThrow(new Error('any_httpClient_error'));
+      await expect(promise).rejects.toThrow(
+        new Error('any_createTransferRepository_error')
+      );
     });
   });
 });

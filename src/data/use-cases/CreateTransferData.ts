@@ -3,16 +3,13 @@ import {
   CreateTransferParams,
 } from './../../domain/use-cases/CreateTransfer';
 
+import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
-import { HttpClient } from './../interfaces/HttpClient';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export class CreateTransferData implements CreateTransfer {
-  constructor(
-    private readonly uri: string,
-    private readonly httpClient: HttpClient
-  ) {}
+  constructor(private createTransferRepository: CreateTransferRepository) {}
 
   public async create(
     createTransferParams: CreateTransferParams
@@ -22,17 +19,8 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
-    const options = {
-      body: params,
-    };
+    const result = await this.createTransferRepository.create(params);
 
-    const uri = this.uri + '/paymentOrders';
-
-    const result = await this.httpClient.post<
-      CreateTransferParams,
-      TransferModel
-    >(uri, options);
-
-    return result.body;
+    return result;
   }
 }

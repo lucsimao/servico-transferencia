@@ -1,3 +1,4 @@
+import { ApiCreateTransferRepository } from '../../infra/repositories/ApiCreateTransferRepository';
 import { CreateTransferController } from '../../presentation/controllers/CreateTransferController';
 import { CreateTransferData } from '../../data/use-cases/CreateTransferData';
 import Env from '../config/Env';
@@ -7,7 +8,11 @@ export class CreateTransferControllerFactory {
   public static create() {
     const uri = Env.servicesAddress.paymentOrders;
     const httpClient = new GotAdapter();
-    const createTransfer = new CreateTransferData(uri, httpClient);
+    const createTransferRepository = new ApiCreateTransferRepository(
+      uri,
+      httpClient
+    );
+    const createTransfer = new CreateTransferData(createTransferRepository);
     return new CreateTransferController(createTransfer);
   }
 }
