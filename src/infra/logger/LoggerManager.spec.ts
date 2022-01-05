@@ -1,10 +1,5 @@
-import { Logger } from './../../data/interfaces/logger/Logger';
 import { LoggerManager } from './LoggerManager';
-const makeLoggerStub = (): jest.Mocked<Logger> => ({
-  info: jest.fn(),
-  warning: jest.fn(),
-  error: jest.fn(),
-});
+import { makeLoggerStub } from '../test/testHelper';
 
 const makeSut = () => {
   const loggerStub = makeLoggerStub();

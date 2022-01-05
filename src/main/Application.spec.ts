@@ -1,34 +1,16 @@
 import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
-import express, { Application, RequestHandler, Router } from 'express';
+import express, { Application, RequestHandler } from 'express';
+import { makeExpressAppStub, makeRouterStub } from './tests/testHelper';
 
 import App from './Application';
-import { Logger } from '../data/interfaces/logger/Logger';
 import { TransferRoutes } from './routes/TransferRoutes';
+import { makeLoggerStub } from '../infra/test/testHelper';
 
 jest.mock('express');
 jest.mock('./middlewares');
 jest.mock('./routes/TransferRoutes');
 
 express.Router = () => makeRouterStub();
-
-const makeRouterStub = (): jest.Mocked<Router> => {
-  const result: jest.Mocked<Partial<Router>> = {
-    get: jest.fn(),
-    post: jest.fn(),
-  };
-  return result as jest.Mocked<Router>;
-};
-
-const makeExpressAppStub = (): jest.Mocked<Partial<Application>> => ({
-  listen: jest.fn().mockReturnValue({ close: jest.fn() }),
-  use: jest.fn(),
-});
-
-const makeLoggerStub = (): jest.Mocked<Logger> => ({
-  info: jest.fn(),
-  warning: jest.fn(),
-  error: jest.fn(),
-});
 
 const makeSut = () => {
   const fakePort = 9999;

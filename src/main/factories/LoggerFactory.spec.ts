@@ -3,6 +3,7 @@ import { LoggerManager } from './../../infra/logger/LoggerManager';
 
 const makeSut = () => {
   const sut = LoggerFactory;
+
   return { sut };
 };
 

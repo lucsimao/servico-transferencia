@@ -13,7 +13,6 @@ jest.mock(
 const makeSut = () => {
   const url = 'any_url';
   const options = { headers: { value: 'any_header' }, body: 'any_body' };
-
   const sut = new GotAdapter();
 
   return { sut, url, options };

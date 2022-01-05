@@ -1,27 +1,10 @@
-import { Request, Response } from 'express';
+import {
+  makeControllerStub,
+  makeFakeExpressRequest,
+  makeFakeExpressResponse,
+} from '../tests/testHelper';
 
-import { Controller } from '../../presentation/interfaces/Controller';
 import { ExpressRouteAdapter } from './ExpressRouteAdapter';
-
-const makeFakeExpressRequest = (): jest.Mocked<Request> => {
-  const result: jest.Mocked<Partial<Request>> = {
-    body: { value: 'any_request_body' },
-  };
-  return result as jest.Mocked<Request>;
-};
-const makeFakeExpressResponse = (): jest.Mocked<Response> => {
-  const result: jest.Mocked<Partial<Response>> = {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-  };
-  return result as jest.Mocked<Response>;
-};
-
-const makeControllerStub = (): jest.Mocked<Controller<unknown, unknown>> => ({
-  handle: jest
-    .fn()
-    .mockReturnValue({ statusCode: 999, body: 'any_controller_body' }),
-});
 
 const makeSut = () => {
   const sut = ExpressRouteAdapter;

@@ -1,0 +1,42 @@
+import { Application, NextFunction, Request, Response, Router } from 'express';
+
+import { Controller } from '../../presentation/interfaces/Controller';
+
+export const makeFakeExpressRequest = (): jest.Mocked<Request> => {
+  const result: jest.Mocked<Partial<Request>> = {
+    body: { value: 'any_request_body' },
+  };
+  return result as jest.Mocked<Request>;
+};
+
+export const makeFakeExpressResponse = (): jest.Mocked<Response> => {
+  const result: jest.Mocked<Partial<Response>> = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn().mockReturnThis(),
+    set: jest.fn(),
+  };
+  return result as jest.Mocked<Response>;
+};
+
+export const makeFakeNextFunction = (): NextFunction => jest.fn();
+
+export const makeControllerStub = (): jest.Mocked<
+  Controller<unknown, unknown>
+> => ({
+  handle: jest
+    .fn()
+    .mockReturnValue({ statusCode: 999, body: 'any_controller_body' }),
+});
+
+export const makeRouterStub = (): jest.Mocked<Router> => {
+  const result: jest.Mocked<Partial<Router>> = {
+    get: jest.fn(),
+    post: jest.fn(),
+  };
+  return result as jest.Mocked<Router>;
+};
+
+export const makeExpressAppStub = (): jest.Mocked<Partial<Application>> => ({
+  listen: jest.fn().mockReturnValue({ close: jest.fn() }),
+  use: jest.fn(),
+});

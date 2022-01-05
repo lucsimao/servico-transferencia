@@ -1,32 +1,15 @@
+import {
+  makeFakeCreateTransferRepositoryStub,
+  makeFakeTransferDataParams,
+  makeFakeTransferModel,
+} from '../test/testHelper';
+
 import { CreateTransferData } from './CreateTransferData';
-import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
-import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
-import { TransferModel } from './../../domain/models/TransferModel';
-import { TransferStatusEnum } from './../../domain/enums/TransferStatusEnum';
 
 jest.mock('./../helpers/DateHelper');
 jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(false);
-
-const makeFakeCreateTransferRepositoryStub =
-  (): jest.Mocked<CreateTransferRepository> => ({
-    create: jest.fn(),
-  });
-
-const makeFakeTransferDataParams = (): CreateTransferParams => ({
-  externalId: 'any_external_id',
-  amount: 999,
-  expectedOn: new Date('03/01/2022'),
-});
-
-const makeFakeTransferModel = (): TransferModel => ({
-  internalId: 'any_internal_id',
-  externalId: 'any_external_id',
-  amount: 999,
-  expectedOn: new Date('03/01/2022'),
-  status: TransferStatusEnum.CREATED,
-});
 
 const makeSut = () => {
   const createTransferRepositoryStub = makeFakeCreateTransferRepositoryStub();

@@ -1,27 +1,12 @@
-import { ApiHttpRequest } from '../interfaces';
-import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
+import {
+  makeCreateTransferStub,
+  makeFakeApiHttpRequest,
+} from '../tests/testHelper';
+
 import { CreateTransferController } from './CreateTransferController';
-import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
 import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
-import { TransferModel } from '../../domain/models/TransferModel';
-import { TransferStatusEnum } from '../../domain/enums/TransferStatusEnum';
 import httpStatusCodes from 'http-status-codes';
-
-const makeFakeTransferModel = (): TransferModel => ({
-  internalId: 'any_internal_id',
-  externalId: 'any_external_id',
-  amount: 999,
-  expectedOn: new Date('03/01/2022'),
-  status: TransferStatusEnum.CREATED,
-});
-
-const makeCreateTransferStub = (): jest.Mocked<CreateTransfer> => ({
-  create: jest.fn().mockResolvedValue(makeFakeTransferModel()),
-});
-
-const makeFakeApiHttpRequest = () => {
-  return {} as ApiHttpRequest<CreateTransferParams>;
-};
+import { makeFakeTransferModel } from '../../data/test/testHelper';
 
 const makeSut = () => {
   const createTransferStub = makeCreateTransferStub();
