@@ -8,7 +8,12 @@ module.exports = {
   clearMocks: true,
   preset: 'ts-jest',
   setupFilesAfterEnv: ['./jest.setup.ts'],
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/**/index.ts'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/index.ts',
+    '!src/main/Main.ts',
+  ],
   coverageThreshold: {
     global: {
       branches: 90,
