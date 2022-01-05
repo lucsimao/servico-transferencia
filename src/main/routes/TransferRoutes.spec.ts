@@ -1,15 +1,10 @@
-import express, { Request, Response, Router } from 'express';
-
+import { CreateTransferControllerFactory } from '../factories/CreateTransferControllerFactory';
+import { ExpressRouteAdapter } from './../adapters/ExpressRouteAdapter';
+import { Router } from 'express';
 import { TransferRoutes } from './TransferRoutes';
-
 jest.mock('express');
-express.json = jest.fn().mockReturnValue('any_value');
-
-const makeFakeExpressRequest = (): Request => ({} as Request);
-const makeFakeExpressResponse = (): jest.Mocked<Response> => {
-  const result: jest.Mocked<Partial<Response>> = { send: jest.fn() };
-  return result as jest.Mocked<Response>;
-};
+jest.mock('../../main/adapters/ExpressRouteAdapter');
+jest.mock('./../factories/CreateTransferControllerFactory');
 
 const makeFakeRouter = (): jest.Mocked<Router> => {
   const result: jest.Mocked<Partial<Router>> = { post: jest.fn() };
@@ -27,26 +22,18 @@ describe(TransferRoutes.name, () => {
     it('should call correct routes when method is invoked', () => {
       const { sut } = makeSut();
       const router = makeFakeRouter();
+      const createTransferFactorySpy = (
+        jest.spyOn(CreateTransferControllerFactory, 'create') as jest.Mock
+      ).mockReturnValueOnce('any_create_transfer');
+      const expressAdaptSpy = (
+        jest.spyOn(ExpressRouteAdapter, 'adapt') as jest.Mock
+      ).mockReturnValueOnce('any_route_value');
 
       sut.setRoutes(router);
 
-      expect(router.post).toBeCalledWith('/transfer', expect.any(Function));
-    });
-
-    it('should call correct callback when method is invoked', () => {
-      const { sut } = makeSut();
-      const router = makeFakeRouter();
-      const req = makeFakeExpressRequest();
-      const res = makeFakeExpressResponse();
-      (router.post as jest.Mock).mockImplementationOnce(
-        (_route: string, callback: CallableFunction) => {
-          callback(req, res);
-        }
-      );
-
-      sut.setRoutes(router);
-
-      expect(res.send).toBeCalledWith('any');
+      expect(createTransferFactorySpy).toBeCalledWith();
+      expect(expressAdaptSpy).toBeCalledWith('any_create_transfer');
+      expect(router.post).toBeCalledWith('/transfer', 'any_route_value');
     });
   });
 });

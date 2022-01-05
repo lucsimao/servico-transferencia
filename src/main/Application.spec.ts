@@ -7,6 +7,8 @@ import { TransferRoutes } from './routes/TransferRoutes';
 
 jest.mock('express');
 jest.mock('./middlewares');
+jest.mock('./routes/TransferRoutes');
+
 express.Router = () => makeRouterStub();
 
 const makeRouterStub = (): jest.Mocked<Router> => {
