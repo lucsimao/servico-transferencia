@@ -15,12 +15,29 @@ const makeSut = () => {
 
 describe(LoggerManager.name, () => {
   describe(LoggerManager.prototype.info.name, () => {
+    it('Should have empty logger list  when no logger is ', () => {
+      const sut = new LoggerManager();
+
+      const result = sut.getLoggers();
+
+      expect(result.length).toBe(0);
+    });
+
+    it('Should have filled logger list when no logger is ', () => {
+      const { sut } = makeSut();
+
+      const result = sut.getLoggers();
+
+      expect(result.length).toBe(1);
+    });
+
     it('Should call info when logger.info is called', () => {
       const { sut, loggerStub } = makeSut();
 
       sut.info({ msg: 'any_info_log' });
 
       expect(loggerStub.info).toBeCalledWith({ msg: 'any_info_log' });
+      expect(sut.getLoggers().length).toBe(1);
     });
 
     it('Should throw when logger.info throws', () => {

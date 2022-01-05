@@ -1,7 +1,7 @@
-import express, { Application, Router } from 'express';
+import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import express, { Application, RequestHandler, Router } from 'express';
 
 import App from './Application';
-import { BodyParserMiddleware } from './middlewares';
 import { Logger } from '../data/interfaces/logger/Logger';
 import { TransferRoutes } from './routes/TransferRoutes';
 
@@ -79,10 +79,17 @@ describe(App.name, () => {
   describe(App.prototype.setup.name, () => {
     it('Should call app.use when method is invoked', () => {
       const { sut, expressStub } = makeSut();
-
+      jest
+        .spyOn(BodyParserMiddleware, 'getMiddleware')
+        .mockReturnValueOnce('body_parser' as unknown as RequestHandler);
+      jest
+        .spyOn(CorsMiddleware, 'getMiddleware')
+        .mockReturnValueOnce('cors' as unknown as RequestHandler);
       sut.setup();
 
-      expect(expressStub.use).toBeCalledTimes(3);
+      expect(expressStub.use).toBeCalledWith('/api', expect.anything());
+      expect(expressStub.use).toHaveBeenCalledWith('body_parser');
+      expect(expressStub.use).toHaveBeenCalledWith('cors');
     });
 
     it('Should call middlewares when method is invoked', () => {
@@ -123,6 +130,9 @@ describe(App.name, () => {
         msg: `Finished middlewares setup`,
       });
       expect(loggerStub.info).toBeCalledWith({
+        msg: `Finished application setup`,
+      });
+      expect(loggerStub.info).toBeCalledWith({
         msg: `Starting routes setup...`,
       });
       expect(loggerStub.info).toBeCalledWith({
@@ -152,7 +162,7 @@ describe(App.name, () => {
     });
 
     it('Should call logger in callback function', async () => {
-      const { sut, fakePort, expressStub, loggerStub } = makeSut();
+      const { sut, expressStub, loggerStub } = makeSut();
       (expressStub.listen as jest.Mock).mockImplementationOnce(
         (_port: number, callback: () => void) => {
           callback();
@@ -166,7 +176,7 @@ describe(App.name, () => {
         msg: `Closing application...`,
       });
       expect(loggerStub.info).toBeCalledWith({
-        msg: `Server listening on port ${fakePort}`,
+        msg: `Application Closed`,
       });
     });
 

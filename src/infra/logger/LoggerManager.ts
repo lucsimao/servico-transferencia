@@ -1,7 +1,7 @@
 import { Logger, LoggerParams } from './../../data/interfaces/logger/Logger';
 
 export class LoggerManager implements Logger {
-  private loggers: Logger[] = [];
+  private loggers: Logger[];
 
   public constructor(...loggers: Logger[]) {
     this.loggers = loggers;
@@ -23,5 +23,9 @@ export class LoggerManager implements Logger {
     this.loggers.forEach((logger) => {
       logger.error(message);
     });
+  }
+
+  public getLoggers(): Logger[] {
+    return [...this.loggers];
   }
 }

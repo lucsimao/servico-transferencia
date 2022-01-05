@@ -14,7 +14,7 @@
     "test:functional:staged": "npm run test -- -c ./jest.config.functional.js --findRelatedTests",
     "test:functional:coverage": "npm run test -- -c ./jest.config.functional.js --coverage",
     "test:mutation": "stryker run",
-    "test:ci": "npm run test:unit:coverage && npm run test:functional:coverage",
+    "test:ci": "npm run test:unit:coverage && npm run test:functional",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
     "lint:deadcode": "ts-prune -e",
