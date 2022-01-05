@@ -5,12 +5,15 @@ import {
   internalServerError,
 } from '../helpers/httpHelpers';
 
+import { Controller } from './../interfaces/Controller';
 import { CreateTransfer } from '../../domain/use-cases/CreateTransfer';
 import { CreateTransferParams } from './../../domain/use-cases/CreateTransfer';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { TransferModel } from './../../domain/models/TransferModel';
 
-export class CreateTransferController {
+export class CreateTransferController
+  implements Controller<CreateTransferParams, TransferModel>
+{
   constructor(private readonly createTransfer: CreateTransfer) {}
 
   async handle(
