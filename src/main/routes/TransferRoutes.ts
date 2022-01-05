@@ -1,4 +1,4 @@
-import { CreateTransferControllerFactory } from './../factories/CreateTransferControllerFactory';
+import { CreateTransferControllerFactory } from '../factories/CreateTransferControllerFactory';
 import { ExpressRouteAdapter } from '../../main/adapters/ExpressRouteAdapter';
 import { Router } from 'express';
 

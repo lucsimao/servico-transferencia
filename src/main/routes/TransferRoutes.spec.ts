@@ -4,7 +4,7 @@ import { TransferRoutes } from './TransferRoutes';
 import { makeRouterStub } from '../tests/testHelper';
 jest.mock('express');
 jest.mock('../../main/adapters/ExpressRouteAdapter');
-jest.mock('./../factories/CreateTransferControllerFactory');
+jest.mock('../factories/CreateTransferControllerFactory');
 
 const makeSut = () => {
   const sut = TransferRoutes;
