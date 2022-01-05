@@ -3,7 +3,7 @@ const root = resolve(__dirname);
 module.exports = {
   rootDir: root,
   displayName: 'unit-tests',
-  testMatch: ['<rootDir>/src/**/*.test.ts'],
+  testMatch: ['<rootDir>/test/**/*.test.ts'],
   testEnvironment: 'node',
   clearMocks: true,
   preset: 'ts-jest',
