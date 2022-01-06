@@ -13,7 +13,7 @@ export const makeLoggerStub = (): jest.Mocked<Logger> => ({
 });
 
 export const makeHttpClientStub = (): jest.Mocked<HttpClient> => ({
-  get: jest.fn(),
+  get: jest.fn().mockReturnValue(makeFakeHttpResponse(makeFakeTransferModel())),
   post: jest
     .fn()
     .mockReturnValue(makeFakeHttpResponse(makeFakeTransferModel())),
