@@ -6,6 +6,7 @@ import { TransferModel } from './../../src/domain/models/TransferModel';
 import { TransferRoutes } from './../../src/main/routes/TransferRoutes';
 import { TransferStatusEnum } from './../../src/domain/enums/TransferStatusEnum';
 import express from 'express';
+import { makeFakeCreateTransferResponse } from '../../src/data/test/testHelper';
 import nock from 'nock';
 import request from 'supertest';
 
@@ -17,13 +18,26 @@ const makeFakeTransferModel = (): TransferModel => ({
   status: TransferStatusEnum.CREATED,
 });
 
-const mockApiReturn = (
+const mockCreateApiReturn = (
   status: number,
-  value: TransferModel | { error: Error }
+  value: Pick<TransferModel, 'externalId' | 'status'> | { error: Error }
 ) => {
-  nock.cleanAll();
   nock(Env.servicesAddress.paymentOrders)
     .post('/paymentOrders')
+    .reply(status, value);
+};
+
+const clearMock = () => {
+  nock.cleanAll();
+};
+
+const mockGetApiReturn = (
+  status: number,
+  value: TransferModel | { error: Error },
+  externalId: string
+) => {
+  nock(Env.servicesAddress.paymentOrders)
+    .get(`/paymentOrders/${externalId}`)
     .reply(status, value);
 };
 
@@ -37,28 +51,32 @@ const makeSut = () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
   const sut = new App(3000, expressStub, loggerStub);
-  mockApiReturn(200, makeFakeTransferModel());
+  const fakeResponse = makeFakeCreateTransferResponse();
+  clearMock();
+  mockCreateApiReturn(200, fakeResponse);
+  mockGetApiReturn(200, makeFakeTransferModel(), fakeResponse.externalId);
   sut.setup();
 
   return { sut };
 };
 
 describe(TransferRoutes.name, () => {
-  test('Should return 500 when api fails', async () => {
+  it('Should return 500 when api fails', async () => {
     const { sut } = makeSut();
     const app = sut.getApp();
-    mockApiReturn(500, { error: new Error('any_internal_error') });
     const param: CreateTransferParams = {
       externalId: 'string',
       amount: 1000,
       expectedOn: new Date(),
       dueDate: new Date(),
     };
+    clearMock();
+    mockCreateApiReturn(500, { error: new Error('any_internal_error') });
 
     await request(app).post('/api/transfer').send(param).expect(500);
   });
 
-  test('Should return 201 on success', async () => {
+  it('Should return 201 on success', async () => {
     const { sut } = makeSut();
     const app = sut.getApp();
     const param: CreateTransferParams = {

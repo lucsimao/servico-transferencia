@@ -1,4 +1,5 @@
 import { ApiCreateTransferRepository } from '../../infra/repositories/ApiCreateTransferRepository';
+import { ApiGetTransferRepository } from '../../infra/repositories/ApiGetTransferRepository';
 import { CreateTransferController } from '../../presentation/controllers/CreateTransferController';
 import { CreateTransferData } from '../../data/use-cases/CreateTransferData';
 import Env from '../config/Env';
@@ -12,7 +13,13 @@ export class CreateTransferControllerFactory {
       uri,
       httpClient
     );
-    const createTransfer = new CreateTransferData(createTransferRepository);
-    return new CreateTransferController(createTransfer);
+    const getTransferRepository = new ApiGetTransferRepository(uri, httpClient);
+    const createTransfer = new CreateTransferData(
+      createTransferRepository,
+      getTransferRepository
+    );
+    const result = new CreateTransferController(createTransfer);
+
+    return result;
   }
 }

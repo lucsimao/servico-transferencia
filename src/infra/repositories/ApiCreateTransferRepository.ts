@@ -3,6 +3,10 @@ import { CreateTransferRepository } from '../../data/interfaces/repositories/Cre
 import { HttpClient } from '../../data/interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 
+declare type CreateTransferResponse = Pick<
+  TransferModel,
+  'externalId' | 'status'
+>;
 export class ApiCreateTransferRepository implements CreateTransferRepository {
   constructor(
     private readonly uri: string,
@@ -11,7 +15,7 @@ export class ApiCreateTransferRepository implements CreateTransferRepository {
 
   public async create(
     createTransferParams: CreateTransferParams
-  ): Promise<TransferModel> {
+  ): Promise<Pick<TransferModel, 'externalId' | 'status'>> {
     const options = {
       body: createTransferParams,
     };
@@ -20,7 +24,7 @@ export class ApiCreateTransferRepository implements CreateTransferRepository {
 
     const response = await this.httpClient.post<
       CreateTransferParams,
-      TransferModel
+      CreateTransferResponse
     >(uri, options);
     const result = response.body;
 

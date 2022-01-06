@@ -1,7 +1,8 @@
 import {
-  makeFakeCreateTransferRepositoryStub,
+  makeCreateTransferRepositoryStub,
   makeFakeTransferDataParams,
   makeFakeTransferModel,
+  makeGetTransferRepositoryStub,
 } from '../test/testHelper';
 
 import { CreateTransferData } from './CreateTransferData';
@@ -12,8 +13,13 @@ jest.mock('./../helpers/DateHelper');
 jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(false);
 
 const makeSut = () => {
-  const createTransferRepositoryStub = makeFakeCreateTransferRepositoryStub();
-  const sut = new CreateTransferData(createTransferRepositoryStub);
+  const createTransferRepositoryStub = makeCreateTransferRepositoryStub();
+  const getTransferRepositoryStub = makeGetTransferRepositoryStub();
+
+  const sut = new CreateTransferData(
+    createTransferRepositoryStub,
+    getTransferRepositoryStub
+  );
 
   return { sut, createTransferRepositoryStub };
 };

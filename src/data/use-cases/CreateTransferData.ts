@@ -6,10 +6,14 @@ import {
 import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
+import { GetTransferRepository } from '../interfaces/repositories/GetTransferRepository';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export class CreateTransferData implements CreateTransfer {
-  constructor(private createTransferRepository: CreateTransferRepository) {}
+  constructor(
+    private createTransferRepository: CreateTransferRepository,
+    private getTransferRepository: GetTransferRepository
+  ) {}
 
   public async create(
     createTransferParams: CreateTransferParams
@@ -19,7 +23,8 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
-    const result = await this.createTransferRepository.create(params);
+    const { externalId } = await this.createTransferRepository.create(params);
+    const result = await this.getTransferRepository.get(externalId);
 
     return result;
   }
