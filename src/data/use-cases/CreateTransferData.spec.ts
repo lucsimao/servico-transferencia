@@ -3,6 +3,7 @@ import {
   makeFakeTransferDataParams,
   makeFakeTransferModel,
   makeGetTransferRepositoryStub,
+  makePersistenceTransferRepository,
 } from '../test/testHelper';
 
 import { CreateTransferData } from './CreateTransferData';
@@ -15,13 +16,20 @@ jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(false);
 const makeSut = () => {
   const createTransferRepositoryStub = makeCreateTransferRepositoryStub();
   const getTransferRepositoryStub = makeGetTransferRepositoryStub();
+  const persistenceTransferRepositoryStub = makePersistenceTransferRepository();
 
   const sut = new CreateTransferData(
     createTransferRepositoryStub,
-    getTransferRepositoryStub
+    getTransferRepositoryStub,
+    persistenceTransferRepositoryStub
   );
 
-  return { sut, createTransferRepositoryStub };
+  return {
+    sut,
+    createTransferRepositoryStub,
+    getTransferRepositoryStub,
+    persistenceTransferRepositoryStub,
+  };
 };
 
 describe(CreateTransferData.name, () => {
@@ -34,6 +42,30 @@ describe(CreateTransferData.name, () => {
 
       expect(createTransferRepositoryStub.create).toBeCalledWith(
         transferDataParams
+      );
+    });
+
+    it('Should call getTransferRepository with correct params when method is invoked', async () => {
+      const { sut, getTransferRepositoryStub } = makeSut();
+      const transferDataParams = makeFakeTransferDataParams();
+
+      await sut.create(transferDataParams);
+
+      expect(getTransferRepositoryStub.get).toBeCalledWith('any_external_id');
+    });
+
+    it('Should call persistenceTransferRepository with correct params when method is invoked', async () => {
+      const { sut, persistenceTransferRepositoryStub } = makeSut();
+      const transferDataParams = makeFakeTransferDataParams();
+
+      await sut.create(transferDataParams);
+
+      expect(persistenceTransferRepositoryStub.save).toBeCalledWith(
+        transferDataParams
+      );
+      expect(persistenceTransferRepositoryStub.update).toBeCalledWith(
+        'any_external_id',
+        makeFakeTransferModel()
       );
     });
 
@@ -95,6 +127,42 @@ describe(CreateTransferData.name, () => {
       await expect(promise).rejects.toThrow(
         new Error('any_createTransferRepository_error')
       );
+    });
+
+    it('Should throw when getTransferRepository throws', async () => {
+      const { sut, getTransferRepositoryStub } = makeSut();
+      const transferDataParams = makeFakeTransferDataParams();
+      getTransferRepositoryStub.get.mockRejectedValueOnce(
+        new Error('any_get_error')
+      );
+
+      const promise = sut.create(transferDataParams);
+
+      await expect(promise).rejects.toThrow(new Error('any_get_error'));
+    });
+
+    it('Should throw when persistenceTransferRepository.save throws', async () => {
+      const { sut, persistenceTransferRepositoryStub } = makeSut();
+      const transferDataParams = makeFakeTransferDataParams();
+      persistenceTransferRepositoryStub.save.mockRejectedValueOnce(
+        new Error('any_save_error')
+      );
+
+      const promise = sut.create(transferDataParams);
+
+      await expect(promise).rejects.toThrow(new Error('any_save_error'));
+    });
+
+    it('Should throw when persistenceTransferRepository.update throws', async () => {
+      const { sut, persistenceTransferRepositoryStub } = makeSut();
+      const transferDataParams = makeFakeTransferDataParams();
+      persistenceTransferRepositoryStub.update.mockRejectedValueOnce(
+        new Error('any_update_error')
+      );
+
+      const promise = sut.create(transferDataParams);
+
+      await expect(promise).rejects.toThrow(new Error('any_update_error'));
     });
   });
 });

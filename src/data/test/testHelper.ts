@@ -1,4 +1,8 @@
-import { CreateTransferRepository, GetTransferRepository } from '../interfaces';
+import {
+  CreateTransferRepository,
+  GetTransferRepository,
+  PersistenceTransferRepository,
+} from '../interfaces';
 
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
 import { HttpResponse } from 'src/infra/interfaces';
@@ -17,6 +21,13 @@ export const makeCreateTransferRepositoryStub =
 export const makeGetTransferRepositoryStub =
   (): jest.Mocked<GetTransferRepository> => ({
     get: jest.fn().mockReturnValue(makeFakeTransferModel()),
+  });
+
+export const makePersistenceTransferRepository =
+  (): jest.Mocked<PersistenceTransferRepository> => ({
+    find: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
   });
 
 export const makeFakeTransferDataParams = (): CreateTransferParams => ({

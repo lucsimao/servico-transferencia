@@ -57,4 +57,19 @@ export class PrismaAdapter implements DbClient<models.TransferModel> {
 
     return result as Omit<Transfer, 'id'>;
   }
+
+  public async update(
+    externalId: string,
+    transfer: Partial<models.TransferModel>
+  ): Promise<models.TransferModel> {
+    const data = this.convertToPrisma(transfer);
+    const dbResult = await this.prisma.transfer.update({
+      where: { externalId },
+      data,
+    });
+
+    const result = this.convertToModel(dbResult);
+
+    return result;
+  }
 }

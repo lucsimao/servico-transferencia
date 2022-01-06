@@ -114,4 +114,44 @@ describe(PrismaAdapter.name, () => {
       await expect(promise).rejects.toThrow(new Error('any_create_error'));
     });
   });
+
+  describe(PrismaAdapter.prototype.update.name, () => {
+    it('Should call create when method is created', async () => {
+      const { sut, transferStub } = makeSut();
+      const fakeExternalId = 'any_string';
+      const fakeModel = makeFakeTransferModel();
+
+      await sut.update(fakeExternalId, fakeModel);
+
+      expect(transferStub.update).toBeCalledWith({
+        where: {
+          externalId: 'any_string',
+        },
+        data: makeFakeTransferModel(),
+      });
+    });
+
+    it('Should return correct value when findFirst return incomplete transfer', async () => {
+      const { sut, transferStub } = makeSut();
+      const fakeExternalId = 'any_string';
+      const fakeModel = makeFakeTransferModel();
+      transferStub.findFirst.mockResolvedValueOnce({
+        externalId: '',
+      } as Transfer);
+
+      const result = await sut.update(fakeExternalId, fakeModel);
+
+      expect(result).toEqual(makeFakeTransferModel());
+    });
+
+    it('Should throw when create throws', async () => {
+      const { sut, transferStub } = makeSut();
+      const fakeModel = makeFakeTransferModel();
+      transferStub.create.mockRejectedValueOnce(new Error('any_create_error'));
+
+      const promise = sut.save(fakeModel);
+
+      await expect(promise).rejects.toThrow(new Error('any_create_error'));
+    });
+  });
 });

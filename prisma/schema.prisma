@@ -12,9 +12,9 @@ datasource db {
 
 model Transfer {
   id Int @id @default(autoincrement())
-  internalId String? @db.VarChar(255)
-  externalId String @db.VarChar(255)
-  status Status @default(PENDING)
+  internalId String? @unique @db.VarChar(255) 
+  externalId String @unique @db.VarChar(255) 
+  status Status @default(PENDING) 
   amount Int
   expectedOn DateTime 
 }

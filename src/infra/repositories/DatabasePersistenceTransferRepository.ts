@@ -1,8 +1,8 @@
 import { DbClient } from '../interfaces/DbClient';
-import { PersistenceTransferRepository } from 'src/data/interfaces';
+import { PersistenceTransferRepository } from '../../data/interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 
-export class DatabaseGetTransferRepository
+export class DatabasePersistenceTransferRepository
   implements PersistenceTransferRepository
 {
   constructor(private readonly dbClient: DbClient<TransferModel>) {}
@@ -15,6 +15,15 @@ export class DatabaseGetTransferRepository
 
   public async save(transfer: Partial<TransferModel>): Promise<TransferModel> {
     const result = await this.dbClient.save(transfer);
+
+    return result;
+  }
+
+  public async update(
+    externalId: string,
+    transfer: TransferModel
+  ): Promise<TransferModel> {
+    const result = await this.dbClient.update(externalId, transfer);
 
     return result;
   }

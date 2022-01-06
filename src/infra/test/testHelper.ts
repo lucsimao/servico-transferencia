@@ -25,6 +25,7 @@ export const makeHttpClientStub = (): jest.Mocked<HttpClient> => ({
 export const makeDbClientStub = (): jest.Mocked<DbClient<TransferModel>> => ({
   find: jest.fn().mockResolvedValue(makeFakeTransferModel()),
   save: jest.fn().mockResolvedValue(makeFakeTransferModel()),
+  update: jest.fn().mockResolvedValue(makeFakeTransferModel()),
 });
 
 declare type TransferType = Prisma.TransferDelegate<
@@ -35,6 +36,7 @@ export const makeTransferStub = () => {
   const result: jest.Mocked<Partial<TransferType>> = {
     findFirst: jest.fn().mockResolvedValue(makeFakeTransferModel()),
     create: jest.fn().mockResolvedValue(makeFakeTransferModel()),
+    update: jest.fn().mockResolvedValue(makeFakeTransferModel()),
   };
 
   return result as jest.Mocked<TransferType>;
