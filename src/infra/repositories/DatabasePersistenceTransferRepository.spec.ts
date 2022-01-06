@@ -29,6 +29,16 @@ describe(DatabasePersistenceTransferRepository.name, () => {
 
       expect(result).toEqual(makeFakeTransferModel());
     });
+
+    it('Should throw when find throws', async () => {
+      const { sut, dbClientStub } = makeSut();
+      const fakeExternalId = 'any_external_id';
+      dbClientStub.find.mockRejectedValueOnce(new Error('any_find_error'));
+
+      const promise = sut.find(fakeExternalId);
+
+      await expect(promise).rejects.toThrow(new Error('any_find_error'));
+    });
   });
 
   describe(DatabasePersistenceTransferRepository.prototype.save.name, () => {
@@ -48,6 +58,52 @@ describe(DatabasePersistenceTransferRepository.name, () => {
       const result = await sut.save(fakeTransferModel);
 
       expect(result).toEqual(makeFakeTransferModel());
+    });
+
+    it('Should throw when save throws', async () => {
+      const { sut, dbClientStub } = makeSut();
+      const fakeTransferModel = makeFakeTransferModel();
+      dbClientStub.save.mockRejectedValueOnce(new Error('any_find_error'));
+
+      const promise = sut.save(fakeTransferModel);
+
+      await expect(promise).rejects.toThrow(new Error('any_find_error'));
+    });
+  });
+
+  describe(DatabasePersistenceTransferRepository.prototype.update.name, () => {
+    it('Should call save when method is called', async () => {
+      const { sut, dbClientStub } = makeSut();
+      const fakeTransferModel = makeFakeTransferModel();
+      const fakeExternalId = 'any_external_id';
+
+      await sut.update(fakeExternalId, fakeTransferModel);
+
+      expect(dbClientStub.update).toHaveBeenCalledWith(
+        fakeExternalId,
+        makeFakeTransferModel()
+      );
+    });
+
+    it('Should return value when method is called', async () => {
+      const { sut } = makeSut();
+      const fakeTransferModel = makeFakeTransferModel();
+      const fakeExternalId = 'any_external_id';
+
+      const result = await sut.update(fakeExternalId, fakeTransferModel);
+
+      expect(result).toEqual(makeFakeTransferModel());
+    });
+
+    it('Should throw when update throws', async () => {
+      const { sut, dbClientStub } = makeSut();
+      const fakeTransferModel = makeFakeTransferModel();
+      const fakeExternalId = 'any_external_id';
+      dbClientStub.update.mockRejectedValueOnce(new Error('any_find_error'));
+
+      const promise = sut.update(fakeExternalId, fakeTransferModel);
+
+      await expect(promise).rejects.toThrow(new Error('any_find_error'));
     });
   });
 });
