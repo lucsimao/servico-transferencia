@@ -1,5 +1,5 @@
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
-import { CreateTransferRepository } from '../../data/interfaces/repositories/CreateTransferRepository';
+import { CreateTransferRepository } from '../../data/interfaces';
 import { HttpClient } from '../interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 

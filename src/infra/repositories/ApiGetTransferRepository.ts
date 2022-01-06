@@ -1,4 +1,4 @@
-import { GetTransferRepository } from 'src/data/interfaces/repositories/GetTransferRepository';
+import { GetTransferRepository } from 'src/data/interfaces';
 import { HttpClient } from '../interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 

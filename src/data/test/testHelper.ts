@@ -1,8 +1,7 @@
+import { CreateTransferRepository, GetTransferRepository } from '../interfaces';
+
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
-import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
-import { GetTransferRepository } from '../interfaces/repositories/GetTransferRepository';
 import { HttpResponse } from 'src/infra/interfaces';
-import { PersistenceTransferRepository } from '../interfaces/repositories/PersistenceTransferRepository';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export const makeFakeHttpResponse = (data: unknown): HttpResponse => ({
@@ -18,12 +17,6 @@ export const makeCreateTransferRepositoryStub =
 export const makeGetTransferRepositoryStub =
   (): jest.Mocked<GetTransferRepository> => ({
     get: jest.fn().mockReturnValue(makeFakeTransferModel()),
-  });
-
-export const makePersistenceTransferRepositoryStub =
-  (): jest.Mocked<PersistenceTransferRepository> => ({
-    save: jest.fn(),
-    find: jest.fn(),
   });
 
 export const makeFakeTransferDataParams = (): CreateTransferParams => ({

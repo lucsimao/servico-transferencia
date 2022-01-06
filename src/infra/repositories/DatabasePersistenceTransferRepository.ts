@@ -1,8 +1,10 @@
 import { DbClient } from '../interfaces/DbClient';
-import { PersistenceTransferRepository } from 'src/data/interfaces/repositories/PersistenceTransferRepository';
+import { PersistenceTransferRepository } from 'src/data/interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 
-export class ApiGetTransferRepository implements PersistenceTransferRepository {
+export class DatabaseGetTransferRepository
+  implements PersistenceTransferRepository
+{
   constructor(private readonly dbClient: DbClient<TransferModel>) {}
 
   public async find(externalId: string): Promise<TransferModel> {

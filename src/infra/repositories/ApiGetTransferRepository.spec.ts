@@ -8,11 +8,23 @@ const makeSut = () => {
 
   const sut = new ApiGetTransferRepository(fakeUri, httpClientStub);
 
-  return { sut };
+  return { sut, httpClientStub };
 };
 
 describe(ApiGetTransferRepository.name, () => {
   describe(ApiGetTransferRepository.prototype.get, () => {
+    it('Should call get value when method is called', async () => {
+      const { sut, httpClientStub } = makeSut();
+      const fakeExternalId = 'any_id';
+
+      await sut.get(fakeExternalId);
+
+      expect(httpClientStub.get).toBeCalledWith(
+        'http://any_uri/my_url/paymentOrders/any_id',
+        { headers: {} }
+      );
+    });
+
     it('Should return value when method is called', async () => {
       const { sut } = makeSut();
       const fakeExternalId = 'any_id';

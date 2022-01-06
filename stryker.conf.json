@@ -6,7 +6,8 @@
     "{src,lib}/**/!(*.+(s|S)pec|*.+(t|T)est).+(cjs|mjs|js|ts|jsx|tsx|html|vue)",
     "!src/main/Main.ts",
     "!src/main/config/Env.ts",
-    "!src/index.ts"
+    "!src/index.ts",
+    "!src/**/testHelper.ts"
   ],
   "jest": {
     "projectType": "custom",

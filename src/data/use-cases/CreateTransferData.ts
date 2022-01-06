@@ -2,11 +2,10 @@ import {
   CreateTransfer,
   CreateTransferParams,
 } from './../../domain/use-cases/CreateTransfer';
+import { CreateTransferRepository, GetTransferRepository } from '../interfaces';
 
-import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
-import { GetTransferRepository } from '../interfaces/repositories/GetTransferRepository';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export class CreateTransferData implements CreateTransfer {

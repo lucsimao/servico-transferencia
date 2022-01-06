@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 
 import App from '../../src/main/Application';
 import { CorsMiddleware } from './../../src/main/middlewares/CorsMiddleware';
-import { Logger } from './../../src/data/interfaces/logger/Logger';
+import { Logger } from './../../src/data/interfaces';
 import request from 'supertest';
 
 const makeLoggerStub = (): jest.Mocked<Logger> => ({

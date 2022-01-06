@@ -4,12 +4,8 @@ import { PrismaClient, Transfer } from '@prisma/client';
 
 import { DbClient } from '../interfaces/DbClient';
 
-export class PrimaAdapter implements DbClient<models.TransferModel> {
-  private readonly prisma;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+export class PrismaAdapter implements DbClient<models.TransferModel> {
+  constructor(private readonly prisma: PrismaClient) {}
 
   public async find(externalId: string): Promise<models.TransferModel> {
     const dbResult = await this.prisma.transfer.findFirst({
@@ -38,7 +34,7 @@ export class PrimaAdapter implements DbClient<models.TransferModel> {
   }
 
   public async save(
-    transfer: models.TransferModel
+    transfer: Partial<models.TransferModel>
   ): Promise<models.TransferModel> {
     const data = this.convertToPrisma(transfer);
     const dbResult = await this.prisma.transfer.create({ data });
@@ -49,16 +45,16 @@ export class PrimaAdapter implements DbClient<models.TransferModel> {
   }
 
   private convertToPrisma(
-    transfer: models.TransferModel
+    transfer: Partial<models.TransferModel>
   ): Omit<Transfer, 'id'> {
-    const result: Omit<Transfer, 'id'> = {
+    const result: Partial<Omit<Transfer, 'id'>> = {
       externalId: transfer.externalId,
       amount: transfer.amount,
-      internalId: transfer.internalId || '',
+      internalId: transfer.internalId,
       expectedOn: transfer.expectedOn,
       status: transfer.status,
     };
 
-    return result;
+    return result as Omit<Transfer, 'id'>;
   }
 }
