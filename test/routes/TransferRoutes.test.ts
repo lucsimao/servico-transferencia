@@ -4,7 +4,6 @@ import Env from '../../src/main/config/Env';
 import { Logger } from './../../src/data/interfaces/logger/Logger';
 import { TransferModel } from './../../src/domain/models/TransferModel';
 import { TransferRoutes } from './../../src/main/routes/TransferRoutes';
-import { TransferStatusEnum } from './../../src/domain/enums/TransferStatusEnum';
 import express from 'express';
 import { makeFakeCreateTransferResponse } from '../../src/data/test/testHelper';
 import nock from 'nock';
@@ -15,7 +14,7 @@ const makeFakeTransferModel = (): TransferModel => ({
   externalId: 'any_external_id',
   amount: 999,
   expectedOn: new Date(),
-  status: TransferStatusEnum.CREATED,
+  status: 'CREATED',
 });
 
 const mockCreateApiReturn = (

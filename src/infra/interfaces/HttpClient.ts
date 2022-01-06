@@ -1,4 +1,4 @@
-import { HttpOptions, HttpResponse } from '../interfaces';
+import { HttpOptions, HttpResponse } from '.';
 
 export interface HttpClient {
   get<T>(uri: string, options: HttpOptions): Promise<HttpResponse<T>>;

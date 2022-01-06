@@ -1,5 +1,5 @@
 import { GetTransferRepository } from 'src/data/interfaces/repositories/GetTransferRepository';
-import { HttpClient } from '../../data/interfaces';
+import { HttpClient } from '../interfaces';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export class ApiGetTransferRepository implements GetTransferRepository {

@@ -1,9 +1,7 @@
-import { TransferStatusEnum } from '../enums/TransferStatusEnum';
-
 export interface TransferModel {
   internalId: string;
   externalId: string;
-  status: TransferStatusEnum;
+  status: 'APPROVED' | 'PENDING' | 'CREATED' | 'SCHEDULED' | 'REJECTED';
   amount: number;
   expectedOn: Date;
 }
