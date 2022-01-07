@@ -1,7 +1,6 @@
 import { PrismaClient, Transfer } from '@prisma/client';
 import {
   makeFakeExternalId,
-  makeFakeTransferDb,
   makeFakeTransferModel,
 } from '../../../data/test/testHelper';
 import { makePrismaStub, makeTransferStub } from '../../test/testHelper';
@@ -92,7 +91,6 @@ describe(PrismaAdapter.name, () => {
         data: {
           amount: undefined,
           expectedOn: undefined,
-          externalId: NaN,
           internalId: undefined,
           status: undefined,
         },
@@ -105,8 +103,10 @@ describe(PrismaAdapter.name, () => {
 
       await sut.save(fakeModel);
 
+      const { externalId: _, ...transferDbParam } = makeFakeTransferModel();
+
       expect(transferStub.create).toBeCalledWith({
-        data: makeFakeTransferDb(),
+        data: transferDbParam,
       });
     });
 
@@ -122,18 +122,20 @@ describe(PrismaAdapter.name, () => {
   });
 
   describe(PrismaAdapter.prototype.update.name, () => {
-    it('Should call create when method is created', async () => {
+    it('Should call update when method is called', async () => {
       const { sut, transferStub } = makeSut();
       const fakeExternalId = makeFakeExternalId();
       const fakeModel = makeFakeTransferModel();
 
       await sut.update(fakeExternalId, fakeModel);
 
+      const { externalId: _, ...transferDbParam } = makeFakeTransferModel();
+
       expect(transferStub.update).toBeCalledWith({
         where: {
-          externalId: makeFakeExternalId(),
+          externalId: 2,
         },
-        data: makeFakeTransferDb(),
+        data: transferDbParam,
       });
     });
 

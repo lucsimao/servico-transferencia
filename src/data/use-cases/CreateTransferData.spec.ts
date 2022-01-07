@@ -12,6 +12,7 @@ import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 
 jest.mock('./../helpers/DateHelper');
 jest.spyOn(DateHelper, 'isDateOverdue').mockReturnValue(false);
+jest.useFakeTimers().setSystemTime(new Date().getTime());
 
 const makeSut = () => {
   const createTransferRepositoryStub = makeCreateTransferRepositoryStub();
@@ -34,15 +35,32 @@ const makeSut = () => {
 
 describe(CreateTransferData.name, () => {
   describe(CreateTransferData.prototype.create.name, () => {
+    it('Should call createTransferRepository with correct date when expectedOn is provided', async () => {
+      const { sut, createTransferRepositoryStub } = makeSut();
+      const transferDataParams = {
+        expectedOn: new Date('03-12-15'),
+        ...makeFakeTransferDataParams(),
+      };
+
+      await sut.create(transferDataParams);
+
+      expect(createTransferRepositoryStub.create).toBeCalledWith({
+        expectedOn: new Date('03-12-15'),
+        ...makeFakeTransferDataParams(),
+      });
+    });
+
     it('Should call createTransferRepository with correct params when method is invoked', async () => {
       const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = makeFakeTransferDataParams();
 
       await sut.create(transferDataParams);
 
-      expect(createTransferRepositoryStub.create).toBeCalledWith(
-        transferDataParams
-      );
+      expect(createTransferRepositoryStub.create).toBeCalledWith({
+        amount: 999,
+        expectedOn: new Date(),
+        externalId: 'any_external_id',
+      });
     });
 
     it('Should call getTransferRepository with correct params when method is invoked', async () => {
@@ -77,10 +95,10 @@ describe(CreateTransferData.name, () => {
       );
     });
 
-    it('Should return CreateTransferModel response when dueDate is provided and not expired', async () => {
+    it('Should return CreateTransferModel response when expectDate is provided and not expired', async () => {
       const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = {
-        dueDate: new Date(),
+        expectedOn: new Date('03-12-15'),
         ...makeFakeTransferDataParams(),
       };
       const fakeTransferModel = makeFakeTransferModel();
@@ -109,7 +127,7 @@ describe(CreateTransferData.name, () => {
     it(`Should throw ${ExpiredTransferError.name} when transfer is expired`, async () => {
       const { sut, createTransferRepositoryStub } = makeSut();
       const transferDataParams = {
-        dueDate: new Date(),
+        expectedOn: new Date(),
         ...makeFakeTransferDataParams(),
       };
       const fakeTransferModel = makeFakeTransferModel();

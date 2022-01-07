@@ -59,11 +59,35 @@ describe(DateHelper.name, () => {
   });
 
   describe(DateHelper.formatDate, () => {
-    it('Should return formatted date when method is invoked', async () => {
+    it('Should call toLocaleString when method is invoked', () => {
+      const { sut } = makeSut();
+      const date = new Date('Jun 1 2020');
+      const toLocaleStringSpy = jest.spyOn(Date.prototype, 'toLocaleString');
+
+      sut.formatDate(date);
+
+      expect(toLocaleStringSpy).toBeCalledWith('en-us', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+    });
+
+    it('Should call replace when method is invoked', () => {
+      const { sut } = makeSut();
+      const date = new Date('Jun 1 2020');
+      const replaceSpy = jest.spyOn(String.prototype, 'replace');
+
+      sut.formatDate(date);
+
+      expect(replaceSpy).toBeCalledWith(/(\d+)\/(\d+)\/(\d+)/, '$2-$1-$3');
+    });
+
+    it('Should return formatted date when method is invoked', () => {
       const { sut } = makeSut();
       const date = new Date('Jun 1 2020');
 
-      const result = await sut.formatDate(date);
+      const result = sut.formatDate(date);
 
       expect(result).toBe('01-06-2020');
     });

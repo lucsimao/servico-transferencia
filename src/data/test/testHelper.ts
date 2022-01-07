@@ -35,7 +35,6 @@ export const makePersistenceTransferRepository =
 export const makeFakeTransferDataParams = (): CreateTransferParams => ({
   externalId: 'any_external_id',
   amount: 999,
-  expectedOn: new Date('03/01/2022'),
 });
 
 export const makeFakeCreateTransferResponse = (): Pick<
