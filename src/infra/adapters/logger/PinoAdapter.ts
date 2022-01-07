@@ -1,4 +1,4 @@
-import { Logger, LoggerParams } from '../../../data/interfaces';
+import { Logger, LoggerParams } from '../../interfaces/logger/Logger';
 
 import pino from 'pino';
 

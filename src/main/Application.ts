@@ -1,7 +1,7 @@
 import { Application, Router } from 'express';
 import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
 
-import { Logger } from '../data/interfaces';
+import { Logger } from '../infra/interfaces/logger/Logger';
 import { Server } from 'http';
 import { TransferRoutes } from './routes/TransferRoutes';
 

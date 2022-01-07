@@ -1,7 +1,7 @@
 import App from '../../src/main/Application';
 import { CreateTransferParams } from '../../src/domain/use-cases/CreateTransfer';
 import Env from '../../src/main/config/Env';
-import { Logger } from './../../src/data/interfaces';
+import { Logger } from '../infra/interfaces/logger/Logger';
 import { TransferModel } from './../../src/domain/models/TransferModel';
 import { TransferRoutes } from './../../src/main/routes/TransferRoutes';
 import express from 'express';

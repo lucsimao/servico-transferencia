@@ -6,7 +6,7 @@ import {
 
 import { DbClient } from '../interfaces/DbClient';
 import { HttpClient } from '../interfaces';
-import { Logger } from '../../data/interfaces';
+import { Logger } from '../interfaces/logger/Logger';
 import { TransferModel } from 'src/domain/models/TransferModel';
 
 export const makeLoggerStub = (): jest.Mocked<Logger> => ({
