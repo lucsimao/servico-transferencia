@@ -2,6 +2,7 @@ import { ApiCreateTransferRepository } from '../../infra/repositories/ApiCreateT
 import { ApiGetTransferRepository } from '../../infra/repositories/ApiGetTransferRepository';
 import { CreateTransferController } from '../../presentation/controllers/CreateTransferController';
 import { CreateTransferData } from '../../data/use-cases/CreateTransferData';
+import CreateTransferJoiAdapter from '../../infra/adapters/validators/CreateTransferJoiAdapter';
 import { DatabasePersistenceTransferRepository } from '../../infra/repositories/DatabasePersistenceTransferRepository';
 import Env from '../config/Env';
 import { GotAdapter } from '../../infra/adapters/http-client/GotAdapter';
@@ -26,7 +27,13 @@ export class CreateTransferControllerFactory {
       getTransferRepository,
       persistenceTransferRepository
     );
-    const result = new CreateTransferController(createTransfer);
+
+    const createTransferValidator = new CreateTransferJoiAdapter();
+
+    const result = new CreateTransferController(
+      createTransfer,
+      createTransferValidator
+    );
 
     return result;
   }

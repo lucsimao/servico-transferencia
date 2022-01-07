@@ -1,5 +1,6 @@
 import {
   makeCreateTransferStub,
+  makeCreateTransferValidatorStub,
   makeFakeApiHttpRequest,
 } from '../tests/testHelper';
 
@@ -10,7 +11,11 @@ import { makeFakeTransferModel } from '../../data/test/testHelper';
 
 const makeSut = () => {
   const createTransferStub = makeCreateTransferStub();
-  const sut = new CreateTransferController(createTransferStub);
+  const createTransferValidatorStub = makeCreateTransferValidatorStub();
+  const sut = new CreateTransferController(
+    createTransferStub,
+    createTransferValidatorStub
+  );
 
   return { sut, createTransferStub };
 };
