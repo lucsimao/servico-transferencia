@@ -5,6 +5,7 @@ import {
 } from '../interfaces';
 
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
+import { DateHelper } from '../helpers/DateHelper';
 import { HttpResponse } from 'src/infra/interfaces';
 import { Transfer } from '@prisma/client';
 import { TransferModel } from '../../domain/models/TransferModel';
@@ -52,6 +53,15 @@ export const makeFakeTransferModel = (): TransferModel => ({
   expectedOn: new Date('03/01/2022'),
   status: 'CREATED',
 });
+
+export const makeFakeTransferApi = () => {
+  const transferModel = makeFakeTransferDataParams();
+  return {
+    externalId: transferModel.externalId,
+    amount: transferModel.amount * 100,
+    expectedOn: DateHelper.formatDate(transferModel.expectedOn || new Date()),
+  };
+};
 
 export const makeFakeTransferDb = (): Transfer => {
   const { externalId: _externalId, ...transferModel } = makeFakeTransferModel();

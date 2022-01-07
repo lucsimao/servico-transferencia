@@ -20,9 +20,9 @@ export class CreateTransferData implements CreateTransfer {
   ) {}
 
   public async create(
-    createTransferParams: CreateTransferParams
+    createTransferParams: Omit<CreateTransferParams, 'externalId'>
   ): Promise<TransferModel> {
-    const { expectedOn, ...params } = createTransferParams;
+    const { expectedOn } = createTransferParams;
     if (expectedOn && DateHelper.isDateOverdue(expectedOn)) {
       throw new ExpiredTransferError();
     }
@@ -30,7 +30,10 @@ export class CreateTransferData implements CreateTransfer {
     const { externalId } = await this.persistenceTransferRepository.save(
       createTransferParams
     );
-    const { internalId } = await this.createTransferRepository.create(params);
+    const { internalId } = await this.createTransferRepository.create({
+      externalId,
+      ...createTransferParams,
+    });
     await this.persistenceTransferRepository.update(Number(externalId), {
       internalId,
     });

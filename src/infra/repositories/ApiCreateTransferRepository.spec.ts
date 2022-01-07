@@ -1,4 +1,5 @@
 import {
+  makeFakeTransferApi,
   makeFakeTransferDataParams,
   makeFakeTransferModel,
 } from '../../data/test/testHelper';
@@ -25,7 +26,7 @@ describe(ApiCreateTransferRepository.name, () => {
 
       expect(httpClientStub.post).toBeCalledWith(
         'http://any_uri/my_url/paymentOrders',
-        { body: fakeTransferDataParams }
+        { body: makeFakeTransferApi() }
       );
     });
 
