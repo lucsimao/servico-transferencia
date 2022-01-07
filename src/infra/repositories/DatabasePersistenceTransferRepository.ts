@@ -7,7 +7,7 @@ export class DatabasePersistenceTransferRepository
 {
   constructor(private readonly dbClient: DbClient<TransferModel>) {}
 
-  public async find(externalId: string): Promise<TransferModel> {
+  public async find(externalId: number): Promise<TransferModel> {
     const result = await this.dbClient.find(externalId);
 
     return result;
@@ -20,7 +20,7 @@ export class DatabasePersistenceTransferRepository
   }
 
   public async update(
-    externalId: string,
+    externalId: number,
     transfer: TransferModel
   ): Promise<TransferModel> {
     const result = await this.dbClient.update(externalId, transfer);

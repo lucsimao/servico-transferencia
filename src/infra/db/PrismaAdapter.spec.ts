@@ -1,8 +1,12 @@
 import { PrismaClient, Transfer } from '@prisma/client';
+import {
+  makeFakeExternalId,
+  makeFakeTransferDb,
+  makeFakeTransferModel,
+} from '../../data/test/testHelper';
 import { makePrismaStub, makeTransferStub } from '../test/testHelper';
 
 import { PrismaAdapter } from './PrismaAdapter';
-import { makeFakeTransferModel } from '../../data/test/testHelper';
 
 jest.mock('@prisma/client');
 
@@ -18,20 +22,20 @@ describe(PrismaAdapter.name, () => {
   describe(PrismaAdapter.prototype.find.name, () => {
     it('Should call findFirst when method is called', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
 
       await sut.find(fakeExternalId);
 
       expect(transferStub.findFirst).toBeCalledWith({
-        where: { externalId: 'any_string' },
+        where: { externalId: 2 },
       });
     });
 
     it('Should return correct value when findFirst return incomplete transfer', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
       transferStub.findFirst.mockResolvedValueOnce({
-        externalId: '',
+        externalId: 0,
       } as Transfer);
 
       const result = await sut.find(fakeExternalId);
@@ -39,7 +43,7 @@ describe(PrismaAdapter.name, () => {
       expect(result).toEqual({
         amount: undefined,
         expectedOn: undefined,
-        externalId: '',
+        externalId: '0',
         internalId: '',
         status: undefined,
       });
@@ -47,7 +51,7 @@ describe(PrismaAdapter.name, () => {
 
     it('Should return correct value when method is called', async () => {
       const { sut } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
 
       const result = await sut.find(fakeExternalId);
 
@@ -56,7 +60,7 @@ describe(PrismaAdapter.name, () => {
 
     it('Should throw Error when findFirst returns null', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
       transferStub.findFirst.mockResolvedValueOnce(null);
 
       const promise = sut.find(fakeExternalId);
@@ -66,7 +70,7 @@ describe(PrismaAdapter.name, () => {
 
     it('Should throw when findFirst throws', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
       transferStub.findFirst.mockRejectedValueOnce(
         new Error('any_find_first_error')
       );
@@ -88,7 +92,7 @@ describe(PrismaAdapter.name, () => {
         data: {
           amount: undefined,
           expectedOn: undefined,
-          externalId: undefined,
+          externalId: NaN,
           internalId: undefined,
           status: undefined,
         },
@@ -101,7 +105,9 @@ describe(PrismaAdapter.name, () => {
 
       await sut.save(fakeModel);
 
-      expect(transferStub.create).toBeCalledWith({ data: fakeModel });
+      expect(transferStub.create).toBeCalledWith({
+        data: makeFakeTransferDb(),
+      });
     });
 
     it('Should throw when create throws', async () => {
@@ -118,25 +124,25 @@ describe(PrismaAdapter.name, () => {
   describe(PrismaAdapter.prototype.update.name, () => {
     it('Should call create when method is created', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
       const fakeModel = makeFakeTransferModel();
 
       await sut.update(fakeExternalId, fakeModel);
 
       expect(transferStub.update).toBeCalledWith({
         where: {
-          externalId: 'any_string',
+          externalId: makeFakeExternalId(),
         },
-        data: makeFakeTransferModel(),
+        data: makeFakeTransferDb(),
       });
     });
 
     it('Should return correct value when findFirst return incomplete transfer', async () => {
       const { sut, transferStub } = makeSut();
-      const fakeExternalId = 'any_string';
+      const fakeExternalId = makeFakeExternalId();
       const fakeModel = makeFakeTransferModel();
       transferStub.findFirst.mockResolvedValueOnce({
-        externalId: '',
+        externalId: 2,
       } as Transfer);
 
       const result = await sut.update(fakeExternalId, fakeModel);

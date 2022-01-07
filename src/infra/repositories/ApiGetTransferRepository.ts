@@ -8,11 +8,11 @@ export class ApiGetTransferRepository implements GetTransferRepository {
     private readonly httpClient: HttpClient
   ) {}
 
-  public async get(externalId: string): Promise<TransferModel> {
+  public async get(internalId: string): Promise<TransferModel> {
     const options = {
       headers: {},
     };
-    const uri = this.uri + '/paymentOrders/' + externalId;
+    const uri = this.uri + '/paymentOrders/' + internalId;
     const response = await this.httpClient.get<TransferModel>(uri, options);
 
     const result = response.body;

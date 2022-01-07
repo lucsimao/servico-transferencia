@@ -3,5 +3,5 @@ import { TransferModel } from './../../../domain/models/TransferModel';
 export interface CreateTransferRepository {
   create(
     createTransferParams: CreateTransferParams
-  ): Promise<Pick<TransferModel, 'externalId' | 'status'>>;
+  ): Promise<Pick<TransferModel, 'internalId' | 'status'>>;
 }

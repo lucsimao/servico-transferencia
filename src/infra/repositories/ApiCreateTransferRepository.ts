@@ -5,7 +5,7 @@ import { TransferModel } from '../../domain/models/TransferModel';
 
 declare type CreateTransferResponse = Pick<
   TransferModel,
-  'externalId' | 'status'
+  'internalId' | 'status'
 >;
 export class ApiCreateTransferRepository implements CreateTransferRepository {
   constructor(
@@ -15,7 +15,7 @@ export class ApiCreateTransferRepository implements CreateTransferRepository {
 
   public async create(
     createTransferParams: CreateTransferParams
-  ): Promise<Pick<TransferModel, 'externalId' | 'status'>> {
+  ): Promise<Pick<TransferModel, 'internalId' | 'status'>> {
     const options = {
       body: createTransferParams,
     };

@@ -51,7 +51,7 @@ describe(CreateTransferData.name, () => {
 
       await sut.create(transferDataParams);
 
-      expect(getTransferRepositoryStub.get).toBeCalledWith('any_external_id');
+      expect(getTransferRepositoryStub.get).toBeCalledWith('any_internal_id');
     });
 
     it('Should call persistenceTransferRepository with correct params when method is invoked', async () => {
@@ -64,7 +64,7 @@ describe(CreateTransferData.name, () => {
         transferDataParams
       );
       expect(persistenceTransferRepositoryStub.update).toBeCalledWith(
-        'any_external_id',
+        2,
         makeFakeTransferModel()
       );
     });

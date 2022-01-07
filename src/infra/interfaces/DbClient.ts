@@ -1,5 +1,5 @@
 export interface DbClient<T> {
-  find(external: string): Promise<T>;
+  find(externalId: number): Promise<T>;
   save(transfer: Partial<T>): Promise<T>;
-  update(external: string, model: T): Promise<T>;
+  update(externalId: number, model: T): Promise<T>;
 }

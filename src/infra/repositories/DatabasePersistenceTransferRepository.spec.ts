@@ -1,6 +1,10 @@
+import {
+  makeFakeExternalId,
+  makeFakeTransferModel,
+} from '../../data/test/testHelper';
+
 import { DatabasePersistenceTransferRepository } from './DatabasePersistenceTransferRepository';
 import { makeDbClientStub } from '../test/testHelper';
-import { makeFakeTransferModel } from '../../data/test/testHelper';
 
 const makeSut = () => {
   const dbClientStub = makeDbClientStub();
@@ -14,16 +18,16 @@ describe(DatabasePersistenceTransferRepository.name, () => {
   describe(DatabasePersistenceTransferRepository.prototype.find.name, () => {
     it('Should call find when method is called', async () => {
       const { sut, dbClientStub } = makeSut();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
 
       await sut.find(fakeExternalId);
 
-      expect(dbClientStub.find).toHaveBeenCalledWith('any_external_id');
+      expect(dbClientStub.find).toHaveBeenCalledWith(2);
     });
 
     it('Should return value when method is called', async () => {
       const { sut } = makeSut();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
 
       const result = await sut.find(fakeExternalId);
 
@@ -32,7 +36,7 @@ describe(DatabasePersistenceTransferRepository.name, () => {
 
     it('Should throw when find throws', async () => {
       const { sut, dbClientStub } = makeSut();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
       dbClientStub.find.mockRejectedValueOnce(new Error('any_find_error'));
 
       const promise = sut.find(fakeExternalId);
@@ -75,7 +79,7 @@ describe(DatabasePersistenceTransferRepository.name, () => {
     it('Should call save when method is called', async () => {
       const { sut, dbClientStub } = makeSut();
       const fakeTransferModel = makeFakeTransferModel();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
 
       await sut.update(fakeExternalId, fakeTransferModel);
 
@@ -88,7 +92,7 @@ describe(DatabasePersistenceTransferRepository.name, () => {
     it('Should return value when method is called', async () => {
       const { sut } = makeSut();
       const fakeTransferModel = makeFakeTransferModel();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
 
       const result = await sut.update(fakeExternalId, fakeTransferModel);
 
@@ -98,7 +102,7 @@ describe(DatabasePersistenceTransferRepository.name, () => {
     it('Should throw when update throws', async () => {
       const { sut, dbClientStub } = makeSut();
       const fakeTransferModel = makeFakeTransferModel();
-      const fakeExternalId = 'any_external_id';
+      const fakeExternalId = makeFakeExternalId();
       dbClientStub.update.mockRejectedValueOnce(new Error('any_find_error'));
 
       const promise = sut.update(fakeExternalId, fakeTransferModel);

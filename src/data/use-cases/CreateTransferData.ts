@@ -27,10 +27,12 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
-    await this.persistenceTransferRepository.save(createTransferParams);
-    const { externalId } = await this.createTransferRepository.create(params);
-    const result = await this.getTransferRepository.get(externalId);
-    await this.persistenceTransferRepository.update(externalId, result);
+    const { externalId } = await this.persistenceTransferRepository.save(
+      createTransferParams
+    );
+    const { internalId } = await this.createTransferRepository.create(params);
+    const result = await this.getTransferRepository.get(internalId);
+    await this.persistenceTransferRepository.update(Number(externalId), result);
 
     return result;
   }

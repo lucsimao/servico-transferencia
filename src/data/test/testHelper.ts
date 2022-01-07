@@ -6,6 +6,7 @@ import {
 
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
 import { HttpResponse } from 'src/infra/interfaces';
+import { Transfer } from '@prisma/client';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export const makeFakeHttpResponse = (data: unknown): HttpResponse => ({
@@ -25,9 +26,9 @@ export const makeGetTransferRepositoryStub =
 
 export const makePersistenceTransferRepository =
   (): jest.Mocked<PersistenceTransferRepository> => ({
-    find: jest.fn(),
-    save: jest.fn(),
-    update: jest.fn(),
+    find: jest.fn().mockResolvedValue(makeFakeTransferModel()),
+    save: jest.fn().mockResolvedValue(makeFakeTransferModel()),
+    update: jest.fn().mockResolvedValue(makeFakeTransferModel()),
   });
 
 export const makeFakeTransferDataParams = (): CreateTransferParams => ({
@@ -38,16 +39,23 @@ export const makeFakeTransferDataParams = (): CreateTransferParams => ({
 
 export const makeFakeCreateTransferResponse = (): Pick<
   TransferModel,
-  'externalId' | 'status'
+  'internalId' | 'status'
 > => ({
-  externalId: 'any_external_id',
+  internalId: 'any_internal_id',
   status: 'APPROVED',
 });
 
 export const makeFakeTransferModel = (): TransferModel => ({
   internalId: 'any_internal_id',
-  externalId: 'any_external_id',
+  externalId: '2',
   amount: 999,
   expectedOn: new Date('03/01/2022'),
   status: 'CREATED',
 });
+
+export const makeFakeTransferDb = (): Transfer => {
+  const { externalId: _externalId, ...transferModel } = makeFakeTransferModel();
+  return { ...transferModel, externalId: 2 };
+};
+
+export const makeFakeExternalId = (): number => 2;

@@ -19,7 +19,7 @@ const makeFakeTransferModel = (): TransferModel => ({
 
 const mockCreateApiReturn = (
   status: number,
-  value: Pick<TransferModel, 'externalId' | 'status'> | { error: Error }
+  value: Pick<TransferModel, 'internalId' | 'status'> | { error: Error }
 ) => {
   nock(Env.servicesAddress.paymentOrders)
     .post('/paymentOrders')
@@ -33,10 +33,10 @@ const clearMock = () => {
 const mockGetApiReturn = (
   status: number,
   value: TransferModel | { error: Error },
-  externalId: string
+  internalId: string
 ) => {
   nock(Env.servicesAddress.paymentOrders)
-    .get(`/paymentOrders/${externalId}`)
+    .get(`/paymentOrders/${internalId}`)
     .reply(status, value);
 };
 
@@ -53,7 +53,7 @@ const makeSut = () => {
   const fakeResponse = makeFakeCreateTransferResponse();
   clearMock();
   mockCreateApiReturn(200, fakeResponse);
-  mockGetApiReturn(200, makeFakeTransferModel(), fakeResponse.externalId);
+  mockGetApiReturn(200, makeFakeTransferModel(), fakeResponse.internalId);
   sut.setup();
 
   return { sut };

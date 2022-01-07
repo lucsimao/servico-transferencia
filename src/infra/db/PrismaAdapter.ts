@@ -7,7 +7,7 @@ import { DbClient } from '../interfaces/DbClient';
 export class PrismaAdapter implements DbClient<models.TransferModel> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  public async find(externalId: string): Promise<models.TransferModel> {
+  public async find(externalId: number): Promise<models.TransferModel> {
     const dbResult = await this.prisma.transfer.findFirst({
       where: { externalId },
     });
@@ -23,7 +23,7 @@ export class PrismaAdapter implements DbClient<models.TransferModel> {
 
   private convertToModel(transfer: Transfer): models.TransferModel {
     const result: models.TransferModel = {
-      externalId: transfer.externalId,
+      externalId: String(transfer.externalId),
       amount: transfer.amount,
       internalId: transfer.internalId || '',
       expectedOn: transfer.expectedOn,
@@ -44,22 +44,20 @@ export class PrismaAdapter implements DbClient<models.TransferModel> {
     return result;
   }
 
-  private convertToPrisma(
-    transfer: Partial<models.TransferModel>
-  ): Omit<Transfer, 'id'> {
-    const result: Partial<Omit<Transfer, 'id'>> = {
-      externalId: transfer.externalId,
+  private convertToPrisma(transfer: Partial<models.TransferModel>): Transfer {
+    const result: Partial<Transfer> = {
+      externalId: Number(transfer.externalId),
       amount: transfer.amount,
       internalId: transfer.internalId,
       expectedOn: transfer.expectedOn,
       status: transfer.status,
     };
 
-    return result as Omit<Transfer, 'id'>;
+    return result as Transfer;
   }
 
   public async update(
-    externalId: string,
+    externalId: number,
     transfer: Partial<models.TransferModel>
   ): Promise<models.TransferModel> {
     const data = this.convertToPrisma(transfer);
