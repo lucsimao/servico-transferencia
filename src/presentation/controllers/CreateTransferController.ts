@@ -20,7 +20,7 @@ export class CreateTransferController
     apiHttpRequest: ApiHttpRequest<CreateTransferParams>
   ): Promise<ApiHttpResponse<TransferModel | Error>> {
     try {
-      const transferParam = apiHttpRequest.body as CreateTransferParams;
+      const transferParam = apiHttpRequest.body;
       const result = await this.createTransfer.create(transferParam);
 
       return created(result);
