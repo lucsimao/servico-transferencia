@@ -1,14 +1,14 @@
 import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import { SwaggerUiRoutes, TransferRoutes } from './routes';
 import express, { Application, RequestHandler } from 'express';
 import { makeExpressAppStub, makeRouterStub } from './tests/testHelper';
 
 import App from './Application';
-import { TransferRoutes } from './routes/TransferRoutes';
 import { makeLoggerStub } from '../infra/test/testHelper';
 
 jest.mock('express');
 jest.mock('./middlewares');
-jest.mock('./routes/TransferRoutes');
+jest.mock('./routes');
 
 express.Router = () => makeRouterStub();
 
@@ -61,7 +61,7 @@ describe(App.name, () => {
   });
 
   describe(App.prototype.setup.name, () => {
-    it('Should call app.use when method is invoked', () => {
+    it('Should call app.use when method is invoked', async () => {
       const { sut, expressStub } = makeSut();
       jest
         .spyOn(BodyParserMiddleware, 'getMiddleware')
@@ -69,40 +69,49 @@ describe(App.name, () => {
       jest
         .spyOn(CorsMiddleware, 'getMiddleware')
         .mockReturnValueOnce('cors' as unknown as RequestHandler);
-      sut.setup();
+
+      await sut.setup();
 
       expect(expressStub.use).toBeCalledWith('/api', expect.anything());
       expect(expressStub.use).toHaveBeenCalledWith('body_parser');
       expect(expressStub.use).toHaveBeenCalledWith('cors');
     });
 
-    it('Should call middlewares when method is invoked', () => {
+    it('Should call middlewares when method is invoked', async () => {
       const { sut } = makeSut();
       const bodyParserSpy = jest.spyOn(BodyParserMiddleware, 'getMiddleware');
       const corsSpy = jest.spyOn(BodyParserMiddleware, 'getMiddleware');
 
-      sut.setup();
+      await sut.setup();
 
       expect(bodyParserSpy).toBeCalledWith();
       expect(corsSpy).toBeCalledWith();
     });
 
-    it('Should setRoutes when method is invoked', () => {
+    it('Should setRoutes when method is invoked', async () => {
       const { sut } = makeSut();
-      const setRoutesSpy = jest.spyOn(TransferRoutes, 'setRoutes');
+      const transferSetRoutesSpy = jest.spyOn(TransferRoutes, 'setRoutes');
+      const swaggerSetRoutesSpy = jest.spyOn(SwaggerUiRoutes, 'setRoutes');
 
-      sut.setup();
+      await sut.setup();
 
-      expect(setRoutesSpy).toBeCalledWith({
+      expect(transferSetRoutesSpy).toBeCalledWith({
         get: expect.any(Function),
         post: expect.any(Function),
+        use: expect.any(Function),
+      });
+
+      expect(swaggerSetRoutesSpy).toBeCalledWith({
+        get: expect.any(Function),
+        post: expect.any(Function),
+        use: expect.any(Function),
       });
     });
 
-    it('Should call logger when method is invoked', () => {
+    it('Should call logger when method is invoked', async () => {
       const { sut, loggerStub } = makeSut();
 
-      sut.setup();
+      await sut.setup();
 
       expect(loggerStub.info).toBeCalledWith({
         msg: `Starting application setup...`,

@@ -1,9 +1,9 @@
 import { Application, Router } from 'express';
 import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import { SwaggerUiRoutes, TransferRoutes } from './routes';
 
 import { Logger } from '../infra/interfaces/logger/Logger';
 import { Server } from 'http';
-import { TransferRoutes } from './routes/TransferRoutes';
 
 export default class App {
   private server: Server | undefined;
@@ -46,6 +46,7 @@ export default class App {
     const router = Router();
     this.app.use('/api', router);
     TransferRoutes.setRoutes(router);
+    SwaggerUiRoutes.setRoutes(router);
 
     this.logger.info({ msg: 'Finished routes setup' });
   }

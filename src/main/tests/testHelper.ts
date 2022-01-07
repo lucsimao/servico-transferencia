@@ -32,6 +32,7 @@ export const makeRouterStub = (): jest.Mocked<Router> => {
   const result: jest.Mocked<Partial<Router>> = {
     get: jest.fn(),
     post: jest.fn(),
+    use: jest.fn(),
   };
   return result as jest.Mocked<Router>;
 };
