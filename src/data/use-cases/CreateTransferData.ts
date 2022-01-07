@@ -8,6 +8,7 @@ import {
   PersistenceTransferRepository,
 } from '../interfaces';
 
+import { AmountHelper } from '../helpers/AmountHelper';
 import { DateHelper } from './../helpers/DateHelper';
 import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { TransferModel } from '../../domain/models/TransferModel';
@@ -27,16 +28,23 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
+    createTransferParams.amount = AmountHelper.roundToTwoDecimalPlaces(
+      createTransferParams.amount
+    );
+
     const { externalId } = await this.persistenceTransferRepository.save(
       createTransferParams
     );
+
     const { internalId } = await this.createTransferRepository.create({
       externalId,
       ...createTransferParams,
     });
+
     await this.persistenceTransferRepository.update(Number(externalId), {
       internalId,
     });
+
     const result = await this.getTransferRepository.get(internalId);
     await this.persistenceTransferRepository.update(Number(externalId), result);
 
