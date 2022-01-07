@@ -7,7 +7,9 @@
     "!src/main/Main.ts",
     "!src/main/config/Env.ts",
     "!src/index.ts",
-    "!src/**/testHelper.ts"
+    "!src/**/testHelper.ts",
+    "!src/**/validators/schemas",
+    "!src/openapirc.ts"
   ],
   "jest": {
     "projectType": "custom",

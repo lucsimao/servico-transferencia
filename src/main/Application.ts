@@ -1,5 +1,9 @@
 import { Application, Router } from 'express';
-import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import {
+  BodyParserMiddleware,
+  CorsMiddleware,
+  RateLimitMiddleware,
+} from './middlewares';
 import { SwaggerUiRoutes, TransferRoutes } from './routes';
 
 import { Logger } from '../infra/interfaces/logger/Logger';
@@ -34,8 +38,13 @@ export default class App {
   private setupMiddlewares(): void {
     this.logger.info({ msg: 'Starting middlewares setup...' });
 
-    this.app.use(BodyParserMiddleware.getMiddleware());
-    this.app.use(CorsMiddleware.getMiddleware());
+    const middleware = [
+      BodyParserMiddleware.getMiddleware(),
+      CorsMiddleware.getMiddleware(),
+      RateLimitMiddleware.getMiddleware(),
+    ];
+
+    this.app.use(middleware);
 
     this.logger.info({ msg: 'Finished middlewares setup' });
   }

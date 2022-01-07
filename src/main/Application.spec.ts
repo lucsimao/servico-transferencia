@@ -1,4 +1,8 @@
-import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import {
+  BodyParserMiddleware,
+  CorsMiddleware,
+  RateLimitMiddleware,
+} from './middlewares';
 import { SwaggerUiRoutes, TransferRoutes } from './routes';
 import express, { Application, RequestHandler } from 'express';
 import { makeExpressAppStub, makeRouterStub } from './tests/testHelper';
@@ -9,6 +13,16 @@ import { makeLoggerStub } from '../infra/test/testHelper';
 jest.mock('express');
 jest.mock('./middlewares');
 jest.mock('./routes');
+
+jest
+  .spyOn(BodyParserMiddleware, 'getMiddleware')
+  .mockReturnValue('body_parser' as unknown as RequestHandler);
+jest
+  .spyOn(CorsMiddleware, 'getMiddleware')
+  .mockReturnValue('cors' as unknown as RequestHandler);
+(jest.spyOn(RateLimitMiddleware, 'getMiddleware') as jest.Mock).mockReturnValue(
+  'rate_limit' as unknown as RequestHandler
+);
 
 express.Router = () => makeRouterStub();
 
@@ -63,29 +77,31 @@ describe(App.name, () => {
   describe(App.prototype.setup.name, () => {
     it('Should call app.use when method is invoked', async () => {
       const { sut, expressStub } = makeSut();
-      jest
-        .spyOn(BodyParserMiddleware, 'getMiddleware')
-        .mockReturnValueOnce('body_parser' as unknown as RequestHandler);
-      jest
-        .spyOn(CorsMiddleware, 'getMiddleware')
-        .mockReturnValueOnce('cors' as unknown as RequestHandler);
 
       await sut.setup();
 
-      expect(expressStub.use).toBeCalledWith('/api', expect.anything());
-      expect(expressStub.use).toHaveBeenCalledWith('body_parser');
-      expect(expressStub.use).toHaveBeenCalledWith('cors');
+      expect(expressStub.use).toHaveBeenCalledWith('/api', expect.anything());
+      expect(expressStub.use).toHaveBeenCalledWith([
+        'body_parser',
+        'cors',
+        'rate_limit',
+      ]);
     });
 
     it('Should call middlewares when method is invoked', async () => {
       const { sut } = makeSut();
       const bodyParserSpy = jest.spyOn(BodyParserMiddleware, 'getMiddleware');
       const corsSpy = jest.spyOn(BodyParserMiddleware, 'getMiddleware');
+      const rateLimitMiddlewareSpy = jest.spyOn(
+        RateLimitMiddleware,
+        'getMiddleware'
+      );
 
       await sut.setup();
 
-      expect(bodyParserSpy).toBeCalledWith();
-      expect(corsSpy).toBeCalledWith();
+      expect(bodyParserSpy).toHaveBeenCalledWith();
+      expect(corsSpy).toHaveBeenCalledWith();
+      expect(rateLimitMiddlewareSpy).toHaveBeenCalledWith();
     });
 
     it('Should setRoutes when method is invoked', async () => {
