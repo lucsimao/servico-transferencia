@@ -1,10 +1,10 @@
-import { isAfter } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 export class DateHelper {
   public static isDateOverdue = (date: Date) => {
     const dateReference = this.getActualDateReference();
 
-    return isAfter(date, dateReference);
+    return isBefore(date, dateReference);
   };
 
   private static getActualDateReference(): Date {
