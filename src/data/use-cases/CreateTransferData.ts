@@ -22,8 +22,8 @@ export class CreateTransferData implements CreateTransfer {
   public async create(
     createTransferParams: CreateTransferParams
   ): Promise<TransferModel> {
-    const { dueDate, ...params } = createTransferParams;
-    if (dueDate && DateHelper.isDateOverdue(dueDate)) {
+    const { expectedOn, ...params } = createTransferParams;
+    if (expectedOn && DateHelper.isDateOverdue(expectedOn)) {
       throw new ExpiredTransferError();
     }
 
@@ -31,6 +31,9 @@ export class CreateTransferData implements CreateTransfer {
       createTransferParams
     );
     const { internalId } = await this.createTransferRepository.create(params);
+    await this.persistenceTransferRepository.update(Number(externalId), {
+      internalId,
+    });
     const result = await this.getTransferRepository.get(internalId);
     await this.persistenceTransferRepository.update(Number(externalId), result);
 

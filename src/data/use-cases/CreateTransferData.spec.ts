@@ -63,7 +63,15 @@ describe(CreateTransferData.name, () => {
       expect(persistenceTransferRepositoryStub.save).toBeCalledWith(
         transferDataParams
       );
-      expect(persistenceTransferRepositoryStub.update).toBeCalledWith(
+      expect(persistenceTransferRepositoryStub.update).toHaveBeenNthCalledWith(
+        1,
+        2,
+        {
+          internalId: 'any_internal_id',
+        }
+      );
+      expect(persistenceTransferRepositoryStub.update).toHaveBeenNthCalledWith(
+        2,
         2,
         makeFakeTransferModel()
       );
