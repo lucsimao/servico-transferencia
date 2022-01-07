@@ -1,7 +1,9 @@
 import { LoggerManager } from './../../infra/logger/LoggerManager';
+import PinoAdapter from '../../infra/adapters/logger/PinoAdapter';
 
 export class LoggerFactory {
   public static create() {
-    return new LoggerManager();
+    const pinoAdapter = new PinoAdapter();
+    return new LoggerManager(pinoAdapter);
   }
 }
