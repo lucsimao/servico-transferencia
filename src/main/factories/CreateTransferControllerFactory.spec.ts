@@ -3,7 +3,7 @@ import { CreateTransferControllerFactory } from './CreateTransferControllerFacto
 import { LoggerManager } from '../../infra/logger/LoggerManager';
 
 jest.mock('../../data/use-cases/CreateTransferData');
-jest.mock('../../infra/http-client/GotAdapter');
+jest.mock('../../infra/adapters/http-client/GotAdapter');
 
 const makeSut = () => {
   const sut = CreateTransferControllerFactory;

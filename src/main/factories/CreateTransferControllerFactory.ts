@@ -4,8 +4,8 @@ import { CreateTransferController } from '../../presentation/controllers/CreateT
 import { CreateTransferData } from '../../data/use-cases/CreateTransferData';
 import { DatabasePersistenceTransferRepository } from '../../infra/repositories/DatabasePersistenceTransferRepository';
 import Env from '../config/Env';
-import { GotAdapter } from '../../infra/http-client/GotAdapter';
-import { PrismaAdapter } from '../../infra/db/PrismaAdapter';
+import { GotAdapter } from '../../infra/adapters/http-client/GotAdapter';
+import { PrismaAdapter } from '../../infra/adapters/db/PrismaAdapter';
 import { PrismaClient } from '@prisma/client';
 
 export class CreateTransferControllerFactory {
