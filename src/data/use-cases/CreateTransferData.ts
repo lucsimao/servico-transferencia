@@ -28,6 +28,10 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
+    if (!expectedOn) {
+      createTransferParams.expectedOn = new Date();
+    }
+
     createTransferParams.amount = AmountHelper.roundToTwoDecimalPlaces(
       createTransferParams.amount
     );
