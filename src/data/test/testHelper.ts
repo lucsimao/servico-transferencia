@@ -7,7 +7,6 @@ import {
 import { CreateTransferParams } from '../../domain/use-cases/CreateTransfer';
 import { DateHelper } from '../helpers/DateHelper';
 import { HttpResponse } from 'src/infra/interfaces';
-import { Transfer } from '@prisma/client';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export const makeFakeHttpResponse = (data: unknown): HttpResponse => ({
@@ -60,11 +59,6 @@ export const makeFakeTransferApi = () => {
     amount: transferModel.amount * 100,
     expectedOn: DateHelper.formatDate(transferModel.expectedOn || new Date()),
   };
-};
-
-export const makeFakeTransferDb = (): Transfer => {
-  const { externalId: _externalId, ...transferModel } = makeFakeTransferModel();
-  return { ...transferModel, externalId: 2 };
 };
 
 export const makeFakeExternalId = (): number => 2;
