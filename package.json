@@ -19,7 +19,8 @@
     "lint:fix": "eslint ./src --ext .ts --fix",
     "lint:deadcode": "ts-prune -e",
     "style:check": "prettier --check src/**/*.ts",
-    "style:fix": "prettier --write src/**/*.ts --loglevel silent"
+    "style:fix": "prettier --write src/**/*.ts --loglevel silent",
+    "db:migrate:dev": "prisma migrate dev --name init"
   },
   "author": "",
   "license": "ISC",
