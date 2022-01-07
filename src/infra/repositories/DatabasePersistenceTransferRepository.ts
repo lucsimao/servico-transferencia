@@ -21,7 +21,7 @@ export class DatabasePersistenceTransferRepository
 
   public async update(
     externalId: number,
-    transfer: TransferModel
+    transfer: Partial<TransferModel>
   ): Promise<TransferModel> {
     const result = await this.dbClient.update(externalId, transfer);
 
