@@ -46,7 +46,6 @@ export class PrismaAdapter implements DbClient<models.TransferModel> {
 
   private convertToPrisma(transfer: Partial<models.TransferModel>): Transfer {
     const result: Partial<Transfer> = {
-      externalId: Number(transfer.externalId),
       amount: transfer.amount,
       internalId: transfer.internalId,
       expectedOn: transfer.expectedOn,
