@@ -7,6 +7,7 @@ import { TransferRoutes } from './../../src/main/routes/TransferRoutes';
 import express from 'express';
 import { makeFakeCreateTransferResponse } from '../../src/data/test/testHelper';
 import nock from 'nock';
+import { prismaClearTransferDatabase } from '../helpers/PrismaHelper';
 import request from 'supertest';
 
 const makeFakeTransferModel = (): TransferModel => ({
@@ -60,6 +61,10 @@ const makeSut = () => {
 };
 
 describe(TransferRoutes.name, () => {
+  beforeEach(async () => {
+    await prismaClearTransferDatabase();
+  });
+
   it('Should return 500 when api fails', async () => {
     const { sut } = makeSut();
     const app = sut.getApp();
@@ -67,7 +72,6 @@ describe(TransferRoutes.name, () => {
       externalId: 'string',
       amount: 1000,
       expectedOn: new Date(),
-      dueDate: new Date(),
     };
     clearMock();
     mockCreateApiReturn(500, { error: new Error('any_internal_error') });
@@ -82,7 +86,6 @@ describe(TransferRoutes.name, () => {
       externalId: 'string',
       amount: 1000,
       expectedOn: new Date(),
-      dueDate: new Date(),
     };
 
     await request(app).post('/api/transfer').send(param).expect(201);
