@@ -24,7 +24,7 @@ describe(ApiGetTransferRepository.name, () => {
       await sut.get(String(fakeExternalId));
 
       expect(httpClientStub.get).toBeCalledWith(
-        'http://any_uri/my_url/paymentOrders/2',
+        'http://any_uri/my_url/paymentOrders/?internalId=2',
         { headers: {} }
       );
     });

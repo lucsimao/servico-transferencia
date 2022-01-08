@@ -43,32 +43,14 @@ describe(CreateTransferController.name, () => {
       });
     });
 
-    it(`Should return ${httpStatusCodes.BAD_REQUEST} when CreateTransfer throws a ${ExpiredTransferError.name}`, async () => {
+    it(`Should throw when CreateTransfer throws`, async () => {
       const { sut, createTransferStub } = makeSut();
       const fakeApiHttpRequest = makeFakeApiHttpRequest();
       createTransferStub.create.mockRejectedValue(new ExpiredTransferError());
 
-      const result = await sut.handle(fakeApiHttpRequest);
+      const promise = sut.handle(fakeApiHttpRequest);
 
-      expect(result).toEqual({
-        statusCode: httpStatusCodes.BAD_REQUEST,
-        body: new ExpiredTransferError(),
-      });
-    });
-
-    it(`Should return ${httpStatusCodes.INTERNAL_SERVER_ERROR} when CreateTransfer throws`, async () => {
-      const { sut, createTransferStub } = makeSut();
-      const fakeApiHttpRequest = makeFakeApiHttpRequest();
-      createTransferStub.create.mockRejectedValue(
-        new Error('any_create_error')
-      );
-
-      const result = await sut.handle(fakeApiHttpRequest);
-
-      expect(result).toEqual({
-        statusCode: httpStatusCodes.INTERNAL_SERVER_ERROR,
-        body: new Error('any_create_error'),
-      });
+      await expect(promise).rejects.toThrow(new ExpiredTransferError());
     });
   });
 });

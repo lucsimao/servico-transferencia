@@ -6,6 +6,7 @@ import {
 } from './middlewares';
 import { SwaggerUiRoutes, TransferRoutes } from './routes';
 
+import { ErrorMiddleware } from './middlewares/ErrorMiddleware';
 import { Logger } from '../infra/interfaces/logger/Logger';
 import { Server } from 'http';
 
@@ -31,6 +32,7 @@ export default class App {
 
     this.setupMiddlewares();
     this.setupRoutes();
+    this.setupErrorMiddleware();
 
     this.logger.info({ msg: 'Finished application setup' });
   }
@@ -58,6 +60,15 @@ export default class App {
     SwaggerUiRoutes.setRoutes(router);
 
     this.logger.info({ msg: 'Finished routes setup' });
+  }
+
+  private setupErrorMiddleware(): void {
+    this.logger.info({ msg: 'Starting error middlewares setup...' });
+
+    const middleware = [ErrorMiddleware.getMiddleware];
+    this.app.use(middleware);
+
+    this.logger.info({ msg: 'Finished error middlewares setup' });
   }
 
   public async close(): Promise<void> {

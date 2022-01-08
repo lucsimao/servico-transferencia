@@ -1,7 +1,5 @@
 import { Application, NextFunction, Request, Response, Router } from 'express';
 
-import { Controller } from '../../presentation/interfaces/Controller';
-
 export const makeFakeExpressRequest = (): jest.Mocked<Request> => {
   const result: jest.Mocked<Partial<Request>> = {
     body: { value: 'any_request_body' },
@@ -13,20 +11,13 @@ export const makeFakeExpressResponse = (): jest.Mocked<Response> => {
   const result: jest.Mocked<Partial<Response>> = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn().mockReturnThis(),
+    send: jest.fn(),
     set: jest.fn(),
   };
   return result as jest.Mocked<Response>;
 };
 
 export const makeFakeNextFunction = (): NextFunction => jest.fn();
-
-export const makeControllerStub = (): jest.Mocked<
-  Controller<unknown, unknown>
-> => ({
-  handle: jest
-    .fn()
-    .mockReturnValue({ statusCode: 999, body: 'any_controller_body' }),
-});
 
 export const makeRouterStub = (): jest.Mocked<Router> => {
   const result: jest.Mocked<Partial<Router>> = {

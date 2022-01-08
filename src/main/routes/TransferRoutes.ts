@@ -15,6 +15,8 @@ import { Router } from 'express';
  * @responseContent {Error} 400.application/json
  * @response 400 - Expired Transfer
  * @responseContent {ExpiredTransferError} 400.application/json
+ * @response 429 - Too Many Request
+ * @responseContent {TooManyRequestsServerError} 400.application/json
  * @response 500 - Internal Server Error
  * @responseContent {InternalServerError} 500.application/json
  */
