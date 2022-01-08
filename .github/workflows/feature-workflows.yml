@@ -30,6 +30,9 @@ jobs:
       - name: Run all tests
         run: npm run test:ci
 
+      - name: Run Coverage
+        run: npm install -g codecov && codecov --disable=gcov --token="$CODECOV_TOKEN"
+
       - name: Run mutation tests
         run: npm run test:mutation
         env:
