@@ -1,27 +1,11 @@
-import { Request, Response } from 'express';
+import {
+  makeFakeExpressRequest,
+  makeFakeExpressResponse,
+  makeFakeNextFunction,
+} from '../tests/testHelper';
 
-import { Controller } from '../../presentation/interfaces/Controller';
 import { ExpressRouteAdapter } from './ExpressRouteAdapter';
-
-const makeFakeExpressRequest = (): jest.Mocked<Request> => {
-  const result: jest.Mocked<Partial<Request>> = {
-    body: { value: 'any_request_body' },
-  };
-  return result as jest.Mocked<Request>;
-};
-const makeFakeExpressResponse = (): jest.Mocked<Response> => {
-  const result: jest.Mocked<Partial<Response>> = {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnThis(),
-  };
-  return result as jest.Mocked<Response>;
-};
-
-const makeControllerStub = (): jest.Mocked<Controller<unknown, unknown>> => ({
-  handle: jest
-    .fn()
-    .mockReturnValue({ statusCode: 999, body: 'any_controller_body' }),
-});
+import { makeControllerStub } from '../../presentation/tests/testHelper';
 
 const makeSut = () => {
   const sut = ExpressRouteAdapter;
@@ -36,9 +20,10 @@ describe(ExpressRouteAdapter.name, () => {
       const controllerStub = makeControllerStub();
       const req = makeFakeExpressRequest();
       const res = makeFakeExpressResponse();
+      const next = makeFakeNextFunction();
 
       const adaptedRoute = await sut.adapt(controllerStub);
-      await adaptedRoute(req, res);
+      await adaptedRoute(req, res, next);
 
       expect(controllerStub.handle).toBeCalledWith(req);
     });
@@ -48,9 +33,10 @@ describe(ExpressRouteAdapter.name, () => {
       const controllerStub = makeControllerStub();
       const req = makeFakeExpressRequest();
       const res = makeFakeExpressResponse();
+      const next = makeFakeNextFunction();
 
       const adaptedRoute = await sut.adapt(controllerStub);
-      await adaptedRoute(req, res);
+      await adaptedRoute(req, res, next);
 
       expect(res.status).toBeCalledWith(999);
       expect(res.json).toBeCalledWith('any_controller_body');
@@ -61,31 +47,33 @@ describe(ExpressRouteAdapter.name, () => {
       const controllerStub = makeControllerStub();
       const req = makeFakeExpressRequest();
       const res = makeFakeExpressResponse();
+      const next = makeFakeNextFunction();
       controllerStub.handle.mockResolvedValueOnce({
         statusCode: 999,
         body: new Error('any_controller_error'),
       });
 
       const adaptedRoute = await sut.adapt(controllerStub);
-      await adaptedRoute(req, res);
+      await adaptedRoute(req, res, next);
 
       expect(res.status).toBeCalledWith(999);
       expect(res.json).toBeCalledWith({ error: 'any_controller_error' });
     });
 
-    it('Should throw when controller throws', async () => {
+    it('Should call next when controller throws', async () => {
       const { sut } = makeSut();
       const controllerStub = makeControllerStub();
       const req = makeFakeExpressRequest();
       const res = makeFakeExpressResponse();
+      const next = makeFakeNextFunction();
       controllerStub.handle.mockRejectedValueOnce(
         new Error('any_controller_error')
       );
 
       const adaptedRoute = await sut.adapt(controllerStub);
-      const promise = adaptedRoute(req, res);
+      await adaptedRoute(req, res, next);
 
-      await expect(promise).rejects.toThrow(new Error('any_controller_error'));
+      expect(next).toBeCalledWith(new Error('any_controller_error'));
     });
   });
 });

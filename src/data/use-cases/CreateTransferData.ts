@@ -2,24 +2,53 @@ import {
   CreateTransfer,
   CreateTransferParams,
 } from './../../domain/use-cases/CreateTransfer';
+import {
+  CreateTransferRepository,
+  GetTransferRepository,
+  PersistenceTransferRepository,
+} from '../interfaces';
 
-import { CreateTransferRepository } from '../interfaces/repositories/CreateTransferRepository';
+import { AmountHelper } from '../helpers/AmountHelper';
 import { DateHelper } from './../helpers/DateHelper';
-import { ExpiredTransferError } from './../../presentation/errors/ExpiredTransferError';
+import { ExpiredTransferError } from '../errors/ExpiredTransferError';
 import { TransferModel } from '../../domain/models/TransferModel';
 
 export class CreateTransferData implements CreateTransfer {
-  constructor(private createTransferRepository: CreateTransferRepository) {}
+  constructor(
+    private readonly createTransferRepository: CreateTransferRepository,
+    private readonly getTransferRepository: GetTransferRepository,
+    private readonly persistenceTransferRepository: PersistenceTransferRepository
+  ) {}
 
   public async create(
-    createTransferParams: CreateTransferParams
+    createTransferParams: Omit<CreateTransferParams, 'externalId'>
   ): Promise<TransferModel> {
-    const { dueDate, ...params } = createTransferParams;
-    if (dueDate && DateHelper.isDateOverdue(dueDate)) {
+    const { expectedOn } = createTransferParams;
+    if (expectedOn && DateHelper.isDateOverdue(expectedOn)) {
       throw new ExpiredTransferError();
     }
 
-    const result = await this.createTransferRepository.create(params);
+    createTransferParams.expectedOn = new Date(expectedOn || Date.now());
+
+    createTransferParams.amount = AmountHelper.roundToTwoDecimalPlaces(
+      createTransferParams.amount
+    );
+
+    const { externalId } = await this.persistenceTransferRepository.save(
+      createTransferParams
+    );
+
+    const { internalId } = await this.createTransferRepository.create({
+      externalId,
+      ...createTransferParams,
+    });
+
+    await this.persistenceTransferRepository.update(Number(externalId), {
+      internalId,
+    });
+
+    const result = await this.getTransferRepository.get(internalId);
+    await this.persistenceTransferRepository.update(Number(externalId), result);
 
     return result;
   }

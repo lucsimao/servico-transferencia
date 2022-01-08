@@ -1,4 +1,4 @@
-import { HttpClient, HttpOptions, HttpResponse } from 'src/data/interfaces';
+import { HttpClient, HttpOptions, HttpResponse } from '../../interfaces';
 import got, { OptionsOfJSONResponseBody } from 'got';
 
 export class GotAdapter implements HttpClient {

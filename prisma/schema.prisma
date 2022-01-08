@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transfer {
+  externalId Int @id @default(autoincrement())
+  internalId String? @db.VarChar(255) 
+  status Status @default(PENDING) 
+  amount Int
+  expectedOn DateTime
+}
+
+enum Status {
+  PENDING
+  CREATED 
+  APPROVED  
+  SCHEDULED  
+  REJECTED
+}

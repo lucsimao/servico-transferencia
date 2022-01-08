@@ -1,0 +1,96 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: Serviço de Transferência
+  description: Service to create transfer order
+  termsOfService: 'https://github.com/lucsimao/servico-transferencia'
+  contact:
+    email: lucasimao64@gmail.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:3333/api
+    description: Local server
+tags:
+  - name: Transfer
+    description: Transfer endpoints
+components:
+  schemas:
+    externalId:
+      type: string
+      example: '3'
+    internalId:
+      type: string
+      example: '50'
+    expectedOn:
+      type: date
+      example: 2020-09-27T23:24:25.925Z
+    amount:
+      type: number
+      example: 520.25
+    status:
+      type: string
+      example: 'ACCEPTED'
+    TransferParam:
+      type: object
+      properties:
+        externalId:
+          '$ref': '#/components/schemas/externalId'
+        amount:
+          '$ref': '#/components/schemas/amount'
+        expectedOn:
+          '$ref': '#/components/schemas/expectedOn'
+
+      required:
+        - externalId
+        - amount
+    TransferResponse:
+      type: object
+      properties:
+        externalId:
+          '$ref': '#/components/schemas/externalId'
+        amount:
+          '$ref': '#/components/schemas/amount'
+        expectedOn:
+          '$ref': '#/components/schemas/expectedOn'
+        internalId:
+          '$ref': '#/components/schemas/internalId'
+        status:
+          '$ref': '#/components/schemas/status'
+      required:
+        - externalId
+        - amount
+        - expectedOn
+        - internalId
+        - status
+    ExpiredTransferError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Expired Transfer Error'
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Generic Error'
+    NotFoundError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Not Found'
+    InternalServerError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Internal Server Error'
+    TooManyRequestsServerError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Too many requests'

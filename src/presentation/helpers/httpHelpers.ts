@@ -21,3 +21,10 @@ export const internalServerError = (error: Error): ApiHttpResponse<Error> => {
     body: error,
   };
 };
+
+export const tooManyRequests = (error: Error): ApiHttpResponse<Error> => {
+  return {
+    statusCode: httpStatusCode.TOO_MANY_REQUESTS,
+    body: error,
+  };
+};

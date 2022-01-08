@@ -1,9 +1,16 @@
-import { Application, Router } from 'express';
-import { BodyParserMiddleware, CorsMiddleware } from './middlewares';
+import {} from './middlewares/ErrorMiddleware';
 
-import { Logger } from '../data/interfaces/logger/Logger';
+import { Application, Router } from 'express';
+import {
+  BodyParserMiddleware,
+  CorsMiddleware,
+  ErrorMiddleware,
+  RateLimitMiddleware,
+} from './middlewares';
+import { SwaggerUiRoutes, TransferRoutes } from './routes';
+
+import { Logger } from '../infra/interfaces/logger/Logger';
 import { Server } from 'http';
-import { TransferRoutes } from './routes/TransferRoutes';
 
 export default class App {
   private server: Server | undefined;
@@ -27,6 +34,7 @@ export default class App {
 
     this.setupMiddlewares();
     this.setupRoutes();
+    this.setupErrorMiddleware();
 
     this.logger.info({ msg: 'Finished application setup' });
   }
@@ -34,8 +42,13 @@ export default class App {
   private setupMiddlewares(): void {
     this.logger.info({ msg: 'Starting middlewares setup...' });
 
-    this.app.use(BodyParserMiddleware.getMiddleware());
-    this.app.use(CorsMiddleware.getMiddleware());
+    const middleware = [
+      BodyParserMiddleware.getMiddleware(),
+      CorsMiddleware.getMiddleware(),
+      RateLimitMiddleware.getMiddleware(),
+    ];
+
+    this.app.use(middleware);
 
     this.logger.info({ msg: 'Finished middlewares setup' });
   }
@@ -46,8 +59,18 @@ export default class App {
     const router = Router();
     this.app.use('/api', router);
     TransferRoutes.setRoutes(router);
+    SwaggerUiRoutes.setRoutes(router);
 
     this.logger.info({ msg: 'Finished routes setup' });
+  }
+
+  private setupErrorMiddleware(): void {
+    this.logger.info({ msg: 'Starting error middlewares setup...' });
+
+    const middleware = [ErrorMiddleware.getMiddleware()];
+    this.app.use(middleware);
+
+    this.logger.info({ msg: 'Finished error middlewares setup' });
   }
 
   public async close(): Promise<void> {

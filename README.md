@@ -1,24 +1,31 @@
-# Node Api Template
+# Serviço de Transferências
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![codecov](https://codecov.io/gh/lucsimao/servico-transferencia/branch/master/graph/badge.svg?token=S02C34WGQ3)](https://codecov.io/gh/lucsimao/servico-transferencia) [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Flucsimao%2Fservico-transferencia%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/lucsimao/servico-transferencia/master)
 
-My personal typescript nodejs configuration
+Este projeto consiste no desafio de criação de uma api de transferência.
 
-## Authors
+## Autor
 
 - [@lucsimao](https://www.github.com/lucsimao)
 
-# Summary
+# Sumário
 
-- [Requirements](#Requirements)
-- [Installation](#Installation)
+- [Requisitos](#Requisitos)
+- [Instalação](#Instalação)
 - [Test](#Test)
 - [Techs](#Techs)
 - [References](#References)
 
-# Installation
+# Requisitos
 
-To install this project, run the following commands:
+Para a utilização deste projeto, recomenda-se as seguintes tecnologias:
+
+- [NodeJs](https://nodejs.org/en/download/)
+- [Docker](https://www.docker.com/products/docker-desktop)
+
+# Instalação
+
+Para instalar esse projeto:
 
 ```
 $ git clone https://github.com/lucsimao/testlink-facade-api
@@ -28,19 +35,41 @@ $ git clone https://github.com/lucsimao/testlink-facade-api
 
 ```
   $ npm install
-  $ npm start
 ```
 
 - For yarn users:
 
 ```
 $ yarn install
-$ yarn start
+```
+
+# Inicialização
+
+- Para iniciar este projeto execute os seguintes comandos:
+
+## Docker
+
+```
+  $ docker-compose up -d
+```
+
+## Modo desenvolvedor
+
+Configurar o banco de dados
+
+```
+  $ docker-compose up -d database database-dashboard
+  $ npm run db:schema:generate
+  $ npm run db:migrate:dev
+```
+
+```
+  $ npm run start:dev
 ```
 
 # Test
 
-To execute this project tests, you must run the following commands:
+Para executar os testes desse projeto, você deve rode os seguintes comandos:
 
 - **Unit Tests**
 
@@ -57,11 +86,23 @@ To execute this project tests, you must run the following commands:
 - **Functional Tests**
 
 ```
+  $ docker-compose up -d database database-dashboard
+  $ npm run db:schema:generate
+  $ npm run db:migrate:dev
+```
+
+```
 $ npm run test:functional
 ```
 
 ```
 $ yarn test:functional
+```
+
+- **Mutation Tests**
+
+```
+$ npm run test:mutation
 ```
 
 - **Lint**
@@ -70,39 +111,84 @@ $ yarn test:functional
 $ npm run lint
 ```
 
-or
+- **Find Dead Code**
 
 ```
-$ yarn lint
+$ npm run lint:deadcode
 ```
 
 - **Style Check**
-  `` npm run style:check`  ``npm run style:fix`or`yarn style:check` `yarn style:fix`
+  ` npm run style:check` `npm run style:fix`
 
-- **All Tests**
-  ```npm test`
-  or
-  `yarn test`
+# Documentação
 
-# Techs
+- Para acessar a o Swagger, após subir o ambiente, acesse a rota [/docs](http://localhost:3333/api/docs/)
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white) ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white) ![Visual Studio Code](https://img.shields.io/badge/VisualStudioCode-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+# Features Implementadas:
 
-In this project, we used the following technologies:
+- [x] Post - Transfer
+- [x] Persistência de Dados
+  - Postgres
+- [x] Gestão de dependências via gerenciador de pacotes (npm)
+- [x] Utilização de Eslint
+- [x] Testes Unitários
+- [x] Documentação com OpenApi
+- [x] Github Actions
+- [x] Graceful Shutdown
+- [x] Logger
+- [x] Rate Limiter
+- [x] Docker Compose
+- [x] Ts-Prune
+- [x] Testes de Mutação
 
+## Implementações Futuras/Pendentes
+
+- [x] [Circuit Break](https://github.com/nodeshift/opossum)
+- [x] Transporte dos Loggers para ElasticSearch. Ex: [lucsimao/node-api-template](https://github.com/lucsimao/node-api-template/blob/develop/docker-compose.yaml)
+- [x] Monitoramento de Métricas com Prometheus e Grafana. Ex:[lucsimao/testlink-facade-api](https://github.com/lucsimao/testlink-facade-api/commit/9d2f702b82820613bc7cd0173a0890492122e4c3)
+- [x] Criação de um fake da Api Externa
+
+# Tecnologias
+
+Para a construção deste projeto, foram utilizadas as seguintes tecnologias:
+
+- [TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 - [Node.js](https://nodejs.org/)
 - [Visual Studio Code](https://code.visualstudio.com/)- Text editor with following plugins installed: [DotENV](https://github.com/mikestead/vscode-dotenv), [ESLint](https://github.com/Microsoft/vscode-eslint), [GitLens](https://github.com/eamodio/vscode-gitlens) e [vscode-icons](https://github.com/vscode-icons/vscode-icons).
-- [Jest](https://jestjs.io/) - Javascript Test Framework.
-- [ESLint](https://github.com/eslint/eslint) - ESLint to padronize the project code.
-- [Prettier](https://prettier.io/) - To format code automatically.
-- [Stryker](https://stryker-mutator.io/docs/General/dashboard/) - To run mutation tests in project and use mutation badges.
+- [Jest](https://jestjs.io/) - Para a execução dos testes
+- [Supertest](https://github.com/visionmedia/supertest) - Para testes funcionais da api
+- [Nock](https://github.com/nock/nock) - Para mock de apis externas
+- [ESLint](https://github.com/eslint/eslint) - Para análise estática do código do projeto.
+- [Prettier](https://prettier.io/) - Para formatação automática do projeto.
+- [Husky](https://github.com/typicode/husky) - Para aplicação de ci/cd no repositório local.
+- [Github Actions](https://circleci.com/circleci-versus-github-actions/) - Para a aplicação do ci/cd no projeto.
+- [Express](https://expressjs.com/pt-br/) - Para a API
+- [Joi](https://github.com/sideway/joi) - Para validação do schema
+- [Pino](https://github.com/pinojs/pino) - Para logs da aplicação
+- [OpenApi](https://swagger.io/) - Para documentação
+- [Docker](https://www.docker.com/) - Para virtualização
+- [Stryker](https://stryker-mutator.io/docs/General/dashboard/) - Para verificação da qualidade dos testes via testes de mutação.
+  Neste projeto foram utilizadas as seguintes tecnologias:
+- [Joi](https://github.com/sideway/joi) - For schema validator
+- [Prisma](https://www.prisma.io/)
+- [TsPrune](https://github.com/nadeesha/ts-prune)
 
-# References
+# Referências
+
+Para a construção deste projeto, foram utilizadas as seguintes referências:
+
+Repositórios
+
+- [Repositório do Rodrigo Manguinho](https://github.com/rmanguinho/clean-ts-api) do curso [NodeJs, Typescript, TDD, DDD, Clean Architecture e SOLID](https://www.udemy.com/course/tdd-com-mango/)
+- [Repositório do Waldemar Neto](https://github.com/waldemarnt/node-typescript-api) do curso [Curso de Node.js completo com Typescript, Jest, TDD, Github](https://www.youtube.com/watch?v=W2ld5xRS3cY)
+- [Repositório pessoal - lucsimao - testlink-facade-api](https://github.com/lucsimao/testlink-facade-api)
+
+Cursos/Artigos
 
 - [Waldemar Neto - DO ZERO A PRODUÇÃO: APRENDA A CONSTRUIR UMA API NODE.JS COM TYPESCRIPT ](https://github.com/waldemarnt/node-typescript-api)
-- [@brunohafonso95](https://github.com/brunohafonso95)
 - [Glaucia Lemos - Curso Typescript Zero To Hero](https://github.com/glaucia86/curso-typescript-zero-to-hero)
 - [Alura - Formação Node JS](https://cursos.alura.com.br/formacao-node-js-12)
 - [NodeJS Integration Test Best Practices](https://github.com/testjavascript/nodejs-integration-tests-best-practices)
 - [NodeJS Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [Javascript Testing Best Practices](https://github.com/goldbergyoni/javascript-testing-best-practices)
+- [Repositório de anotações pessoal](https://github.com/lucsimao/personal-programming-good-practices)

@@ -1,16 +1,14 @@
-import express, { NextFunction, Request, Response } from 'express';
+import {
+  makeFakeExpressRequest,
+  makeFakeExpressResponse,
+  makeFakeNextFunction,
+} from '../tests/testHelper';
 
 import { CorsMiddleware } from '.';
+import express from 'express';
 
 jest.mock('express');
 express.json = jest.fn().mockReturnValue('any_value');
-
-const makeFakeExpressRequest = (): Request => ({} as Request);
-const makeFakeExpressResponse = (): jest.Mocked<Response> => {
-  const result: jest.Mocked<Partial<Response>> = { set: jest.fn() };
-  return result as jest.Mocked<Response>;
-};
-const makeFakeNextFunction = (): NextFunction => jest.fn();
 
 const makeSut = () => {
   const sut = CorsMiddleware;

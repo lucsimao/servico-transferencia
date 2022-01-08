@@ -2,7 +2,8 @@ import express, { Request, Response } from 'express';
 
 import App from '../../src/main/Application';
 import { CorsMiddleware } from './../../src/main/middlewares/CorsMiddleware';
-import { Logger } from './../../src/data/interfaces/logger/Logger';
+import { Logger } from '../infra/interfaces/logger/Logger';
+import { prismaClearTransferDatabase } from '../helpers/PrismaHelper';
 import request from 'supertest';
 
 const makeLoggerStub = (): jest.Mocked<Logger> => ({
@@ -11,18 +12,22 @@ const makeLoggerStub = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makeSut = () => {
+const makeSut = async () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
   const sut = new App(3000, expressStub, loggerStub);
-  sut.setup();
+  await sut.getApp().use(CorsMiddleware.getMiddleware());
 
   return { sut };
 };
 
 describe(CorsMiddleware.name, () => {
+  beforeEach(async () => {
+    await prismaClearTransferDatabase();
+  });
+
   test('Should enable CORS', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
     const app = sut.getApp();
 
     app.get('/test_cors', (_req: Request, res: Response) => {
