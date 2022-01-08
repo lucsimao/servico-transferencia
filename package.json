@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/api.schema.yml dist/src/api.schema.yml",
     "start": "node dist/src/index.js",
     "start:dev": "ts-node-dev src/index.ts",
     "test": "jest --clearCache && jest --silent --passWithNoTests --noStackTrace --runInBand",
