@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "start:dev": "ts-node-dev src/index.ts",
     "test": "jest --clearCache && jest --silent --passWithNoTests --noStackTrace --runInBand",
     "test:unit": "npm run test -- --watch",
@@ -20,7 +20,8 @@
     "lint:deadcode": "ts-prune -e",
     "style:check": "prettier --check src/**/*.ts",
     "style:fix": "prettier --write src/**/*.ts --loglevel silent",
-    "db:migrate:dev": "prisma migrate dev --name init"
+    "db:migrate:dev": "prisma migrate dev --name init",
+    "db:schema:generate": "prisma generate"
   },
   "author": "",
   "license": "ISC",
