@@ -2,10 +2,11 @@ import {
   badRequest,
   internalServerError,
   tooManyRequests,
-} from '../../presentation/helpers/httpHelpers';
+} from './httpHelpers';
 
 import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
-import { TooManyRequestsError } from '../errors/TooManyRequestsError';
+import { InvalidParamsError } from '../../infra/errors/InvalidParamsError';
+import { TooManyRequestsError } from '../../main/errors/TooManyRequestsError';
 
 export class ErrorHelper {
   public static format(error: Error) {
@@ -13,6 +14,9 @@ export class ErrorHelper {
       return tooManyRequests(error);
     }
     if (error instanceof ExpiredTransferError) {
+      return badRequest(error);
+    }
+    if (error instanceof InvalidParamsError) {
       return badRequest(error);
     }
     return internalServerError(error);

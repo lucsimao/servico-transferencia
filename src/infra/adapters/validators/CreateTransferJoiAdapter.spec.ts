@@ -1,4 +1,5 @@
 import CreateTransferJoiAdapter from './CreateTransferJoiAdapter';
+import { InvalidParamsError } from '../../errors/InvalidParamsError';
 import { makeFakeTransferDataParams } from '../../../data/test/testHelper';
 import schema from './schemas/TransferSchema';
 
@@ -10,6 +11,8 @@ jest.mock('joi', () => {
     iso: jest.fn().mockReturnThis(),
     object: jest.fn().mockReturnThis(),
     validate: jest.fn(),
+    extend: jest.fn().mockReturnThis(),
+    format: jest.fn(),
   };
 });
 jest
@@ -61,7 +64,7 @@ describe(CreateTransferJoiAdapter.name, () => {
       });
 
       expect(() => sut.validate(param)).toThrow(
-        new Error(
+        new InvalidParamsError(
           'Please check the following validation errors: any_error_message another_error_message'
         )
       );

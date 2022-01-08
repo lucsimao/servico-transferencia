@@ -1,6 +1,7 @@
 import { ErrorHelper } from './ErrorHelper';
 import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
-import { TooManyRequestsError } from '../errors/TooManyRequestsError';
+import { InvalidParamsError } from '../../infra/errors/InvalidParamsError';
+import { TooManyRequestsError } from '../../main/errors/TooManyRequestsError';
 import httpStatusCodes from 'http-status-codes';
 
 const makeSut = () => {
@@ -20,6 +21,18 @@ describe(ErrorHelper.name, () => {
       expect(result).toEqual({
         statusCode: httpStatusCodes.BAD_REQUEST,
         body: new ExpiredTransferError(),
+      });
+    });
+
+    it(`Should return ${httpStatusCodes.BAD_REQUEST} when CreateTransfer throws a ${ExpiredTransferError.name}`, async () => {
+      const { sut } = makeSut();
+      const error = new InvalidParamsError('any_error');
+
+      const result = await sut.format(error);
+
+      expect(result).toEqual({
+        statusCode: httpStatusCodes.BAD_REQUEST,
+        body: new InvalidParamsError('any_error'),
       });
     });
 

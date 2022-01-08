@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { ErrorHelper } from '../helpers/ErrorHelper';
+import { ErrorHelper } from '../../presentation/helpers/ErrorHelper';
 
 export class ErrorMiddleware {
   public static getMiddleware() {

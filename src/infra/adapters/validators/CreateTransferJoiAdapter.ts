@@ -1,4 +1,5 @@
 import { CreateTransferParams } from '../../../domain/use-cases/CreateTransfer';
+import { InvalidParamsError } from '../../errors/InvalidParamsError';
 import { ValidationError } from 'joi';
 import schema from './schemas/TransferSchema';
 
@@ -12,7 +13,7 @@ export default class CreateTransferJoiAdapter {
     });
 
     if (result.error) {
-      throw new Error(
+      throw new InvalidParamsError(
         this.getSchemaErrorValidation(result.error, errorMessage)
       );
     }

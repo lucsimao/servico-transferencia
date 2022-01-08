@@ -4,11 +4,11 @@ import {
   makeFakeNextFunction,
 } from '../tests/testHelper';
 
-import { ErrorHelper } from '../helpers/ErrorHelper';
+import { ErrorHelper } from '../../presentation/helpers/ErrorHelper';
 import { ErrorMiddleware } from './ErrorMiddleware';
 import { badRequest } from '../../presentation/helpers/httpHelpers';
 
-jest.mock('../helpers/ErrorHelper');
+jest.mock('../../presentation/helpers/ErrorHelper');
 jest
   .spyOn(ErrorHelper, 'format')
   .mockImplementation((error: Error) => badRequest(error));

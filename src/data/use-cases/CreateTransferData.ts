@@ -28,9 +28,7 @@ export class CreateTransferData implements CreateTransfer {
       throw new ExpiredTransferError();
     }
 
-    if (!expectedOn) {
-      createTransferParams.expectedOn = new Date();
-    }
+    createTransferParams.expectedOn = new Date(expectedOn || Date.now());
 
     createTransferParams.amount = AmountHelper.roundToTwoDecimalPlaces(
       createTransferParams.amount

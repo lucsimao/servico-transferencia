@@ -5,6 +5,7 @@ import {
 } from '../tests/testHelper';
 
 import { CreateTransferController } from './CreateTransferController';
+import { ErrorHelper } from '../helpers/ErrorHelper';
 import { ExpiredTransferError } from '../../data/errors/ExpiredTransferError';
 import httpStatusCodes from 'http-status-codes';
 import { makeFakeTransferModel } from '../../data/test/testHelper';
@@ -43,14 +44,15 @@ describe(CreateTransferController.name, () => {
       });
     });
 
-    it(`Should throw when CreateTransfer throws`, async () => {
+    it(`Should call ErrorHelper when CreateTransfer throws`, async () => {
       const { sut, createTransferStub } = makeSut();
       const fakeApiHttpRequest = makeFakeApiHttpRequest();
       createTransferStub.create.mockRejectedValue(new ExpiredTransferError());
+      const formatSpy = jest.spyOn(ErrorHelper, 'format');
 
-      const promise = sut.handle(fakeApiHttpRequest);
+      await sut.handle(fakeApiHttpRequest);
 
-      await expect(promise).rejects.toThrow(new ExpiredTransferError());
+      expect(formatSpy).toBeCalledWith(new ExpiredTransferError());
     });
   });
 });
