@@ -1,6 +1,6 @@
 # Serviço de Transferências
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![codecov](https://codecov.io/gh/lucsimao/servico-transferencia/branch/master/graph/badge.svg?token=S02C34WGQ3)](https://codecov.io/gh/lucsimao/servico-transferencia) [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Flucsimao%2Fservico-transferencia%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/lucsimao/servico-transferencia/master)
 
 Este projeto consiste no desafio de criação de uma api de transferência.
 
@@ -111,8 +111,18 @@ $ npm run test:mutation
 $ npm run lint
 ```
 
+- **Find Dead Code**
+
+```
+$ npm run lint:deadcode
+```
+
 - **Style Check**
   ` npm run style:check` `npm run style:fix`
+
+# Documentação
+
+- Para acessar a o Swagger, após subir o ambiente, acesse a rota [/docs](http://localhost:3333/api/docs/)
 
 # Features Implementadas:
 
@@ -136,6 +146,7 @@ $ npm run lint
 - [x] [Circuit Break](https://github.com/nodeshift/opossum)
 - [x] Transporte dos Loggers para ElasticSearch. Ex: [lucsimao/node-api-template](https://github.com/lucsimao/node-api-template/blob/develop/docker-compose.yaml)
 - [x] Monitoramento de Métricas com Prometheus e Grafana. Ex:[lucsimao/testlink-facade-api](https://github.com/lucsimao/testlink-facade-api/commit/9d2f702b82820613bc7cd0173a0890492122e4c3)
+- [x] Criação de um fake da Api Externa
 
 # Tecnologias
 
