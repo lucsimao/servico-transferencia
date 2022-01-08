@@ -1,6 +1,7 @@
 import {
   BodyParserMiddleware,
   CorsMiddleware,
+  ErrorMiddleware,
   RateLimitMiddleware,
 } from './middlewares';
 import { SwaggerUiRoutes, TransferRoutes } from './routes';
@@ -22,6 +23,9 @@ jest
   .mockReturnValue('cors' as unknown as RequestHandler);
 (jest.spyOn(RateLimitMiddleware, 'getMiddleware') as jest.Mock).mockReturnValue(
   'rate_limit' as unknown as RequestHandler
+);
+(jest.spyOn(ErrorMiddleware, 'getMiddleware') as jest.Mock).mockReturnValue(
+  'error_middleware' as unknown as RequestHandler
 );
 
 express.Router = () => makeRouterStub();
@@ -86,6 +90,7 @@ describe(App.name, () => {
         'cors',
         'rate_limit',
       ]);
+      expect(expressStub.use).toHaveBeenCalledWith(['error_middleware']);
     });
 
     it('Should call middlewares when method is invoked', async () => {
@@ -146,6 +151,12 @@ describe(App.name, () => {
       });
       expect(loggerStub.info).toBeCalledWith({
         msg: `Finished routes setup`,
+      });
+      expect(loggerStub.info).toBeCalledWith({
+        msg: 'Starting error middlewares setup...',
+      });
+      expect(loggerStub.info).toBeCalledWith({
+        msg: 'Finished error middlewares setup',
       });
     });
   });

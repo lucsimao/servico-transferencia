@@ -1,14 +1,12 @@
 import {
   makeFakeExpressRequest,
   makeFakeExpressResponse,
-  makeFakeNextFunction,
 } from '../tests/testHelper';
 
 import { ErrorHelper } from '../../presentation/helpers/ErrorHelper';
 import { ErrorMiddleware } from './ErrorMiddleware';
 import { badRequest } from '../../presentation/helpers/httpHelpers';
 
-jest.mock('../../presentation/helpers/ErrorHelper');
 jest
   .spyOn(ErrorHelper, 'format')
   .mockImplementation((error: Error) => badRequest(error));
@@ -25,11 +23,10 @@ describe(ErrorMiddleware.name, () => {
       const middleware = sut.getMiddleware();
       const req = makeFakeExpressRequest();
       const res = makeFakeExpressResponse();
-      const next = makeFakeNextFunction();
       const error = new Error('any_error');
       const formatSpy = jest.spyOn(ErrorHelper, 'format');
 
-      middleware(req, res, next, error);
+      middleware(error, req, res);
 
       expect(formatSpy).toBeCalledWith(error);
     });

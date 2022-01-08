@@ -1,12 +1,14 @@
+import {} from './middlewares/ErrorMiddleware';
+
 import { Application, Router } from 'express';
 import {
   BodyParserMiddleware,
   CorsMiddleware,
+  ErrorMiddleware,
   RateLimitMiddleware,
 } from './middlewares';
 import { SwaggerUiRoutes, TransferRoutes } from './routes';
 
-import { ErrorMiddleware } from './middlewares/ErrorMiddleware';
 import { Logger } from '../infra/interfaces/logger/Logger';
 import { Server } from 'http';
 
@@ -65,7 +67,7 @@ export default class App {
   private setupErrorMiddleware(): void {
     this.logger.info({ msg: 'Starting error middlewares setup...' });
 
-    const middleware = [ErrorMiddleware.getMiddleware];
+    const middleware = [ErrorMiddleware.getMiddleware()];
     this.app.use(middleware);
 
     this.logger.info({ msg: 'Finished error middlewares setup' });
