@@ -12,11 +12,11 @@ const makeLoggerStub = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makeSut = () => {
+const makeSut = async () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
   const sut = new App(3000, expressStub, loggerStub);
-  sut.setup();
+  await sut.setup();
 
   return { sut };
 };
@@ -27,7 +27,7 @@ describe(BodyParserMiddleware.name, () => {
   });
 
   test('Should parse body as json', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
     const app = sut.getApp();
 
     app.post('/test_body_parser', (req: Request, res: Response) => {

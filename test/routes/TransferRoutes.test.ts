@@ -1,5 +1,4 @@
 import App from '../../src/main/Application';
-import { CreateTransferParams } from '../../src/domain/use-cases/CreateTransfer';
 import Env from '../../src/main/config/Env';
 import { Logger } from '../infra/interfaces/logger/Logger';
 import { TransferModel } from './../../src/domain/models/TransferModel';
@@ -37,7 +36,7 @@ const mockGetApiReturn = (
   internalId: string
 ) => {
   nock(Env.servicesAddress.paymentOrders)
-    .get(`/paymentOrders/${internalId}`)
+    .get(`/paymentOrders?internalId=${internalId}`)
     .reply(status, value);
 };
 
@@ -47,15 +46,12 @@ const makeLoggerStub = (): jest.Mocked<Logger> => ({
   error: jest.fn(),
 });
 
-const makeSut = () => {
+const makeSut = async () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
   const sut = new App(3000, expressStub, loggerStub);
-  const fakeResponse = makeFakeCreateTransferResponse();
-  clearMock();
-  mockCreateApiReturn(200, fakeResponse);
-  mockGetApiReturn(200, makeFakeTransferModel(), fakeResponse.internalId);
-  sut.setup();
+
+  await sut.setup();
 
   return { sut };
 };
@@ -63,31 +59,93 @@ const makeSut = () => {
 describe(TransferRoutes.name, () => {
   beforeEach(async () => {
     await prismaClearTransferDatabase();
+    clearMock();
+    const fakeResponse = makeFakeCreateTransferResponse();
+    mockCreateApiReturn(201, fakeResponse);
+    mockGetApiReturn(201, makeFakeTransferModel(), fakeResponse.internalId);
   });
 
   it('Should return 500 when api fails', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
     const app = sut.getApp();
-    const param: CreateTransferParams = {
+    const param = {
       externalId: 'string',
       amount: 1000,
-      expectedOn: new Date(),
+      expectedOn: '07-01-2022',
     };
     clearMock();
     mockCreateApiReturn(500, { error: new Error('any_internal_error') });
 
-    await request(app).post('/api/transfer').send(param).expect(500);
+    const result = await request(app).post('/api/transfer').send(param);
+    expect(result.body).toEqual({
+      error: 'Response code 500 (Internal Server Error)',
+    });
+    expect(result.status).toEqual(500);
+  });
+
+  it('Should return 400 when invalid date is provided', async () => {
+    const { sut } = await makeSut();
+    const app = sut.getApp();
+    const param = {
+      externalId: 'string',
+      amount: 1000,
+      expectedOn: 'invalid_date',
+    };
+
+    const result = await request(app).post('/api/transfer').send(param);
+    expect(result.body).toEqual({
+      error:
+        'Please check the following validation errors: "expectedOn" must be in DD-MM-YYYY format',
+    });
+    expect(result.status).toEqual(400);
+  });
+
+  it('Should return 400 when empty is provided', async () => {
+    const { sut } = await makeSut();
+    const app = sut.getApp();
+    const param = {};
+
+    const result = await request(app).post('/api/transfer').send(param);
+
+    expect(result.body).toEqual({
+      error:
+        'Please check the following validation errors: "amount" is required',
+    });
+    expect(result.status).toEqual(400);
+  });
+
+  it('Should return 400 when invalid params is provided', async () => {
+    const { sut } = await makeSut();
+    const app = sut.getApp();
+    const param = {};
+
+    const result = await request(app).post('/api/transfer').send(param);
+
+    expect(result.body).toEqual({
+      error:
+        'Please check the following validation errors: "amount" is required',
+    });
+    expect(result.status).toEqual(400);
   });
 
   it('Should return 201 on success', async () => {
-    const { sut } = makeSut();
+    const { sut } = await makeSut();
     const app = sut.getApp();
-    const param: CreateTransferParams = {
+    const param = {
       externalId: 'string',
       amount: 1000,
-      expectedOn: new Date(),
+      expectedOn: '07-01-2022',
     };
 
-    await request(app).post('/api/transfer').send(param).expect(201);
+    const result = await request(app).post('/api/transfer').send(param);
+
+    expect(result.body).toEqual({
+      amount: 999,
+      expectedOn: '2022-01-08T04:39:08.018Z',
+      externalId: 'any_external_id',
+      internalId: 'any_internal_id',
+      status: 'CREATED',
+    });
+    expect(result.status).toEqual(201);
   });
 });
