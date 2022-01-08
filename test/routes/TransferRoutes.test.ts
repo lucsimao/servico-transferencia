@@ -1,21 +1,17 @@
+import {
+  makeFakeCreateTransferResponse,
+  makeFakeTransferModel,
+} from '../../src/data/test/testHelper';
+
 import App from '../../src/main/Application';
 import Env from '../../src/main/config/Env';
-import { Logger } from '../infra/interfaces/logger/Logger';
 import { TransferModel } from './../../src/domain/models/TransferModel';
 import { TransferRoutes } from './../../src/main/routes/TransferRoutes';
 import express from 'express';
-import { makeFakeCreateTransferResponse } from '../../src/data/test/testHelper';
+import { makeLoggerStub } from '../../src/infra/test/testHelper';
 import nock from 'nock';
 import { prismaClearTransferDatabase } from '../helpers/PrismaHelper';
 import request from 'supertest';
-
-const makeFakeTransferModel = (): TransferModel => ({
-  internalId: 'any_internal_id',
-  externalId: 'any_external_id',
-  amount: 999,
-  expectedOn: new Date(),
-  status: 'CREATED',
-});
 
 const mockCreateApiReturn = (
   status: number,
@@ -25,6 +21,9 @@ const mockCreateApiReturn = (
     .post('/paymentOrders')
     .reply(status, value);
 };
+
+const fakeResponse = makeFakeCreateTransferResponse();
+const fakeTransferModel = makeFakeTransferModel();
 
 const clearMock = () => {
   nock.cleanAll();
@@ -40,12 +39,6 @@ const mockGetApiReturn = (
     .reply(status, value);
 };
 
-const makeLoggerStub = (): jest.Mocked<Logger> => ({
-  info: jest.fn(),
-  warning: jest.fn(),
-  error: jest.fn(),
-});
-
 const makeSut = async () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
@@ -60,9 +53,9 @@ describe(TransferRoutes.name, () => {
   beforeEach(async () => {
     await prismaClearTransferDatabase();
     clearMock();
-    const fakeResponse = makeFakeCreateTransferResponse();
+
     mockCreateApiReturn(201, fakeResponse);
-    mockGetApiReturn(201, makeFakeTransferModel(), fakeResponse.internalId);
+    mockGetApiReturn(201, fakeTransferModel, fakeResponse.internalId);
   });
 
   it('Should return 500 when api fails', async () => {
@@ -141,8 +134,8 @@ describe(TransferRoutes.name, () => {
 
     expect(result.body).toEqual({
       amount: 999,
-      expectedOn: '2022-01-08T04:39:08.018Z',
-      externalId: 'any_external_id',
+      expectedOn: '2022-03-01T03:00:00.000Z',
+      externalId: '2',
       internalId: 'any_internal_id',
       status: 'CREATED',
     });

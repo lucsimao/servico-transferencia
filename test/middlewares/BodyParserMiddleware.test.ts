@@ -15,8 +15,9 @@ const makeLoggerStub = (): jest.Mocked<Logger> => ({
 const makeSut = async () => {
   const expressStub = express();
   const loggerStub = makeLoggerStub();
+
   const sut = new App(3000, expressStub, loggerStub);
-  await sut.setup();
+  await sut.getApp().use(BodyParserMiddleware.getMiddleware());
 
   return { sut };
 };
