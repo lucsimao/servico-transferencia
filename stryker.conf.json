@@ -8,7 +8,7 @@
     "!src/main/config/Env.ts",
     "!src/index.ts",
     "!src/**/testHelper.ts",
-    "!src/**/validators/schemas",
+    "!src/**/validators/schemas/*.ts",
     "!src/openapirc.ts"
   ],
   "jest": {
