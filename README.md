@@ -1,6 +1,6 @@
 # Serviço de Transferências
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![codecov](https://codecov.io/gh/lucsimao/servico-transferencia/branch/master/graph/badge.svg?token=S02C34WGQ3)](https://codecov.io/gh/lucsimao/servico-transferencia) [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Flucsimao%2Fservico-transferencia%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/lucsimao/servico-transferencia/master)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT) [![codecov](https://codecov.io/gh/lucsimao/servico-transferencia/branch/master/graph/badge.svg?token=S02C34WGQ3)](https://codecov.io/gh/lucsimao/servico-transferencia) [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Flucsimao%2Fservico-transferencia%2FPR-3)](https://dashboard.stryker-mutator.io/reports/github.com/lucsimao/servico-transferencia/PR-3)
 
 Este projeto consiste no desafio de criação de uma api de transferência.
 
@@ -12,9 +12,9 @@ Este projeto consiste no desafio de criação de uma api de transferência.
 
 - [Requisitos](#Requisitos)
 - [Instalação](#Instalação)
-- [Test](#Test)
-- [Techs](#Techs)
-- [References](#References)
+- [Teste](#Teste)
+- [Tecnologias](#Tecnologias)
+- [Referências](#Referências)
 
 # Requisitos
 
@@ -28,19 +28,11 @@ Para a utilização deste projeto, recomenda-se as seguintes tecnologias:
 Para instalar esse projeto:
 
 ```
-$ git clone https://github.com/lucsimao/testlink-facade-api
+$ git clone https://github.com/lucsimao/servico-transferencia
 ```
-
-- For npm users
 
 ```
   $ npm install
-```
-
-- For yarn users:
-
-```
-$ yarn install
 ```
 
 # Inicialização
@@ -118,7 +110,14 @@ $ npm run lint:deadcode
 ```
 
 - **Style Check**
-  ` npm run style:check` `npm run style:fix`
+
+```
+npm run style:check
+```
+
+```
+npm run style:fix
+```
 
 # Documentação
 
@@ -169,9 +168,9 @@ Para a construção deste projeto, foram utilizadas as seguintes tecnologias:
 - [Docker](https://www.docker.com/) - Para virtualização
 - [Stryker](https://stryker-mutator.io/docs/General/dashboard/) - Para verificação da qualidade dos testes via testes de mutação.
   Neste projeto foram utilizadas as seguintes tecnologias:
-- [Joi](https://github.com/sideway/joi) - For schema validator
-- [Prisma](https://www.prisma.io/)
-- [TsPrune](https://github.com/nadeesha/ts-prune)
+- [Joi](https://github.com/sideway/joi) - Para validação de Schema
+- [Prisma](https://www.prisma.io/) - ORM para gerenciamento de banco de dados
+- [TsPrune](https://github.com/nadeesha/ts-prune) - Para verificação de código morto
 
 # Referências
 
